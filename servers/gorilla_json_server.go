@@ -57,6 +57,7 @@ func RouterHandleGet[TOut any](
 			writeErrorResponse(log, r, w, ToInternalError(err))
 		}
 
+		log.Debug("request response", zap.String("url", r.RequestURI), zap.Any("response", response))
 	}).Methods("GET")
 }
 
@@ -78,6 +79,8 @@ func RouterHandlePost[TIn any, TOut any](
 			return
 		}
 
+		log.Debug("request body", zap.String("url", r.RequestURI), zap.Any("body", request))
+
 		response, err := handler(request)
 		if err != nil {
 			writeErrorResponse(log, r, w, err)
@@ -89,6 +92,6 @@ func RouterHandlePost[TIn any, TOut any](
 			writeErrorResponse(log, r, w, ToInternalError(err))
 		}
 
+		log.Debug("request response", zap.String("url", r.RequestURI), zap.Any("response", response))
 	}).Methods("POST")
 }
-

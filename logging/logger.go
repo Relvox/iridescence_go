@@ -9,7 +9,7 @@ import (
 )
 
 func InitLogger(logPath string, level zapcore.Level) *zap.Logger {
-	logFile, err := os.OpenFile(logPath, os.O_CREATE|os.O_APPEND, 0644)
+	logFile, err := os.OpenFile(logPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		panic(fmt.Errorf("create or append to log file: %w", err))
 	}
