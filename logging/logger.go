@@ -19,10 +19,13 @@ func InitLogger(logPath string, level zapcore.Level) *zap.Logger {
 	pe.EncodeTime = zapcore.ISO8601TimeEncoder // The encoder can be customized for each output
 	consoleEncoder := zapcore.NewConsoleEncoder(pe)
 
-	core := zapcore.NewTee(
-		zapcore.NewCore(fileEncoder, zapcore.AddSync(logFile), level),
+	cores := []zapcore.Core{
 		zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stderr), level),
-	)
+	}
+	if len(logPath) == 0 {
+		cores = append(cores, zapcore.NewCore(fileEncoder, zapcore.AddSync(logFile), level))
+	}
+	core := zapcore.NewTee(cores...)
 
 	return zap.New(core) // Creating the logger
 }

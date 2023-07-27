@@ -48,7 +48,7 @@ func RouterHandleGet[TOut any](
 
 		response, err := handler()
 		if err != nil {
-			writeErrorResponse(log, r, w, err)
+			writeErrorResponse(log, r, w, ToInternalError(err))
 			return
 		}
 
@@ -58,6 +58,33 @@ func RouterHandleGet[TOut any](
 		}
 
 		log.Debug("request response", zap.String("url", r.RequestURI), zap.Any("response", response))
+	}).Methods("GET")
+}
+
+func RouterHandleGetHTML(
+	r *mux.Router,
+	url string,
+	log *zap.Logger,
+	handler func() (string, error),
+) {
+	r.HandleFunc(url, func(w http.ResponseWriter, r *http.Request) {
+		defer panicRecovery(log, r, w)
+
+		log.Info("handle request", zap.String("url", r.RequestURI))
+
+		response, err := handler()
+		if err != nil {
+			writeErrorResponse(log, r, w, ToInternalError(err))
+			return
+		}
+
+		w.Header().Set("Content-Type", "text/html")
+		n, err := w.Write([]byte(response))
+		if err != nil {
+			writeErrorResponse(log, r, w, ToInternalError(err))
+		}
+
+		log.Debug("request response", zap.String("url", r.RequestURI), zap.Int("response", n))
 	}).Methods("GET")
 }
 
@@ -83,7 +110,7 @@ func RouterHandlePost[TIn any, TOut any](
 
 		response, err := handler(request)
 		if err != nil {
-			writeErrorResponse(log, r, w, err)
+			writeErrorResponse(log, r, w, ToInternalError(err))
 			return
 		}
 
@@ -93,5 +120,41 @@ func RouterHandlePost[TIn any, TOut any](
 		}
 
 		log.Debug("request response", zap.String("url", r.RequestURI), zap.Any("response", response))
+	}).Methods("POST")
+}
+
+func RouterHandlePostHTML[TIn any](
+	r *mux.Router,
+	url string,
+	log *zap.Logger,
+	handler func(request TIn) (string, error),
+) {
+	r.HandleFunc(url, func(w http.ResponseWriter, r *http.Request) {
+		defer panicRecovery(log, r, w)
+
+		log.Info("handle request", zap.String("url", r.RequestURI))
+
+		var request TIn
+		err := json.NewDecoder(r.Body).Decode(&request)
+		if err != nil {
+			writeErrorResponse(log, r, w, ToBadRequestError(err))
+			return
+		}
+
+		log.Debug("request body", zap.String("url", r.RequestURI), zap.Any("body", request))
+
+		response, err := handler(request)
+		if err != nil {
+			writeErrorResponse(log, r, w, ToInternalError(err))
+			return
+		}
+
+		w.Header().Set("Content-Type", "text/html")
+		n, err := w.Write([]byte(response))
+		if err != nil {
+			writeErrorResponse(log, r, w, ToInternalError(err))
+		}
+
+		log.Debug("request response", zap.String("url", r.RequestURI), zap.Int("response", n))
 	}).Methods("POST")
 }

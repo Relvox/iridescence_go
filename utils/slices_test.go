@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/relvox/iridescence/utils"
+	"github.com/relvox/iridescence_go/utils"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -6,7 +6,7 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/relvox/iridescence/utils"
+	"github.com/relvox/iridescence_go/utils"
 )
 
 type Graph map[string]utils.Set[string]
