@@ -52,3 +52,58 @@ func TestSameElements(t *testing.T) {
 		})
 	}
 }
+
+func TestSameKeyValues(t *testing.T) {
+	tests := []struct {
+		name           string
+		expected       map[string]int
+		actual         map[string]int
+		expectedErrors []string
+	}{
+		{
+			name:           "Same key-value pairs, same order",
+			expected:       map[string]int{"a": 1, "b": 2, "c": 3},
+			actual:         map[string]int{"a": 1, "b": 2, "c": 3},
+			expectedErrors: []string{},
+		},
+		{
+			name:           "Same key-value pairs, different order",
+			expected:       map[string]int{"a": 1, "b": 2, "c": 3},
+			actual:         map[string]int{"c": 3, "b": 2, "a": 1},
+			expectedErrors: []string{},
+		},
+		{
+			name:     "Different values",
+			expected: map[string]int{"a": 1, "b": 2, "c": 3},
+			actual:   map[string]int{"a": 1, "b": 2, "c": 4},
+			expectedErrors: []string{
+				"Extra items found in actual that were not expected:\n\tmap[c:4]\n",
+				"Not all expected items found in actual:\n\tmap[c:3]\n",
+			},
+		},
+		{
+			name:     "Missing keys",
+			expected: map[string]int{"a": 1, "b": 2, "c": 3},
+			actual:   map[string]int{"a": 1, "b": 2},
+			expectedErrors: []string{
+				"Not all expected items found in actual:\n\tmap[c:3]\n",
+			},
+		},
+		{
+			name:     "Extra keys",
+			expected: map[string]int{"a": 1, "b": 2},
+			actual:   map[string]int{"a": 1, "b": 2, "c": 3},
+			expectedErrors: []string{
+				"Extra items found in actual that were not expected:\n\tmap[c:3]\n",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockT := assert.NewMockT()
+			assert.SameKeyValues(mockT, tt.expected, tt.actual)
+			mockT.Assert(t, tt.expectedErrors...)
+		})
+	}
+}
