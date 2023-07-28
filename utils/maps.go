@@ -6,7 +6,7 @@ import (
 
 // MergeMaps creates a new map and copies target and then source into it
 func MergeMaps[K comparable, V any](target, source map[K]V) map[K]V {
-	var result map[K]V = make(map[K]V, len(source) + len(target))
+	var result map[K]V = make(map[K]V, len(source)+len(target))
 	for k, v := range target {
 		result[k] = v
 	}
@@ -50,13 +50,13 @@ func MapToStruct[T any](m map[string]any) (T, error) {
 }
 
 // StructToMap converts a struct to a map by converting through json
-func StructToMap[T any](t T) (map[string]interface{}, error) {
+func StructToMap[T any](t T) (map[string]any, error) {
 	data, err := json.Marshal(t)
 	if err != nil {
 		return nil, err
 	}
 
-	var out map[string]interface{}
+	var out map[string]any
 	err = json.Unmarshal(data, &out)
 	if err != nil {
 		return nil, err

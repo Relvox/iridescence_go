@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/relvox/iridescence_go/utils"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/relvox/iridescence_go/utils"
 )
 
 func Test_Intersect(t *testing.T) {
