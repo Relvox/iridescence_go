@@ -2,6 +2,9 @@ package utils
 
 import (
 	"encoding/json"
+	"sort"
+
+	"golang.org/x/exp/constraints"
 )
 
 // MergeMaps creates a new map and copies target and then source into it
@@ -24,6 +27,20 @@ func Keys[K comparable, V any](self map[K]V) []K {
 		result[id] = k
 		id++
 	}
+	return result
+}
+
+// SortedKeys gets a slice of all the keys in a map, sorted
+func SortedKeys[K constraints.Ordered, V any](self map[K]V) []K {
+	var result []K = make([]K, len(self))
+	id := 0
+	for k := range self {
+		result[id] = k
+		id++
+	}
+	sort.Slice(result, func(i, j int) bool {
+		return result[i] < result[j]
+	})
 	return result
 }
 
