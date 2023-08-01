@@ -3,20 +3,19 @@ package utils
 import (
 	"math"
 	"sort"
+
+	"golang.org/x/exp/constraints"
 )
 
-type IntLike interface {
-	int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64
-}
-
-func Abs[N IntLike](i N) N {
+func Abs[N constraints.Integer](i N) N {
 	if i >= 0 {
 		return i
 	}
 	return -i
+
 }
 
-func Max[N IntLike](vs ...N) N {
+func Max[N constraints.Integer](vs ...N) N {
 	if len(vs) == 0 {
 		return 0
 	}
@@ -29,7 +28,7 @@ func Max[N IntLike](vs ...N) N {
 	return max
 }
 
-func Min[N IntLike](vs ...N) N {
+func Min[N constraints.Integer](vs ...N) N {
 	if len(vs) == 0 {
 		return 0
 	}
@@ -42,7 +41,7 @@ func Min[N IntLike](vs ...N) N {
 	return min
 }
 
-func Sum[N IntLike](vs ...N) N {
+func Sum[N constraints.Integer](vs ...N) N {
 	var sum N = 0
 	for _, v := range vs {
 		sum += v
@@ -50,7 +49,7 @@ func Sum[N IntLike](vs ...N) N {
 	return sum
 }
 
-func GeometricMean[N IntLike](vals ...N) N {
+func GeometricMean[N constraints.Integer](vals ...N) N {
 	var prod float64 = 1.0
 	for _, v := range vals {
 		prod *= float64(v)
@@ -58,7 +57,7 @@ func GeometricMean[N IntLike](vals ...N) N {
 	return N(math.Pow(prod, 1.0/float64(len(vals))))
 }
 
-func XenoSum[N IntLike](vals ...N) N {
+func XenoSum[N constraints.Integer](vals ...N) N {
 	sort.Slice(vals, func(i, j int) bool {
 		return vals[i] < vals[j]
 	})
