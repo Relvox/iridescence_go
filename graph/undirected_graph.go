@@ -1,13 +1,8 @@
 package graph
 
-import (
-	"bufio"
-	"encoding/json"
-	"fmt"
-	"os"
-)
+import "github.com/relvox/iridescence_go/utils"
 
-type UDGraph[Node comparable, Edge any] map[Node]map[Node]Edge
+type UDGraph[Node comparable, Edge any] AbstractGraph[Node, Edge]
 
 func NewUDGraph[Node comparable, Edge any]() UDGraph[Node, Edge] {
 	return make(UDGraph[Node, Edge])
@@ -25,36 +20,16 @@ func (g UDGraph[Node, Edge]) AddBothEdges(a, b Node, edge Edge) {
 	g.AddEdge(b, a, edge)
 }
 
-func (g UDGraph[Node, Edge]) ToDot(path string) error {
-	file, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
+func (g UDGraph[Node, Edge]) AllNodes() []Node {
+	return utils.Keys(g)
+}
 
-	w := bufio.NewWriter(file)
-	_, err = w.WriteString("graph {\n")
-	if err != nil {
-		return err
+func (g UDGraph[Node, Edge]) EdgesNeighbors(a Node) ([]Edge, []Node) {
+	var resultEs []Edge
+	var resultNs []Node
+	for n, e := range g[a] {
+		resultEs = append(resultEs, e)
+		resultNs = append(resultNs, n)
 	}
-
-	for a, edges := range g {
-		for b, edge := range edges {
-			edgeJson, err := json.Marshal(edge)
-			if err != nil {
-				return err
-			}
-			_, err = w.WriteString(fmt.Sprintf("  \"%v\" -- \"%v\" [label=\"%s\"];\n", a, b, string(edgeJson)))
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	_, err = w.WriteString("}\n")
-	if err != nil {
-		return err
-	}
-
-	return w.Flush()
+	return resultEs, resultNs
 }

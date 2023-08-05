@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+
+	"github.com/relvox/iridescence_go/utils"
 )
 
 type AbstractGraph[Node comparable, Edge any] map[Node]map[Node]Edge
@@ -19,6 +21,25 @@ func (g AbstractGraph[Node, Edge]) AddEdge(a, b Node, edge Edge) {
 		g[a] = make(map[Node]Edge)
 	}
 	g[a][b] = edge
+}
+
+func (g AbstractGraph[Node, Edge]) AddBothEdges(a, b Node, edge Edge) {
+	g.AddEdge(a, b, edge)
+	g.AddEdge(b, a, edge)
+}
+
+func (g AbstractGraph[Node, Edge]) AllNodes() []Node {
+	return utils.Keys(g)
+}
+
+func (g AbstractGraph[Node, Edge]) EdgesNeighbors(a Node) ([]Edge, []Node) {
+	var resultEs []Edge
+	var resultNs []Node
+	for n, e := range g[a] {
+		resultEs = append(resultEs, e)
+		resultNs = append(resultNs, n)
+	}
+	return resultEs, resultNs
 }
 
 func FromDGDot[Node comparable, Edge any](path string, convert func(string) Node) (AbstractGraph[Node, Edge], error) {
