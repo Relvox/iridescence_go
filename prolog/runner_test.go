@@ -10,35 +10,43 @@ import (
 )
 
 func Test_Append(t *testing.T) {
-	runner := prolog.NewRunner(`
+	runner, err := prolog.NewRunner(`
 		:- discontiguous(foo/2).
 		zoo(a, 666).
 		zoo(X, Y) :- foo(X, Y).`)
+
+	if err != nil {
+		t.Failed()
+	}
 	for i := 0; i < 100; i++ {
 		runner.AppendReplace(fmt.Sprintf("foo(a, %d).", i))
-		res := runner.Query("zoo(A,B).")
-		if !assert.Len(t, res, 2) {
+		res, err := runner.Query("zoo(A,B).")
+		if !assert.Len(t, res, 2) || err != nil {
 			t.FailNow()
 		}
 	}
 }
 
 func Test_Rebuild(t *testing.T) {
-	runner := prolog.NewRunner(`
+	runner, err := prolog.NewRunner(`
 		:- discontiguous(foo/2).
 		zoo(a, 666).
 		zoo(X, Y) :- foo(X, Y).`)
+
+	if err != nil {
+		t.Failed()
+	}
 	for i := 0; i < 100; i++ {
 		runner.RebuildRunnerWith(fmt.Sprintf("foo(a, %d).", i))
-		res := runner.Query("zoo(A,B).")
-		if !assert.Len(t, res, 2+i) {
+		res, err := runner.Query("zoo(A,B).")
+		if !assert.Len(t, res, 2+i) || err != nil {
 			t.FailNow()
 		}
 	}
 }
 
 func Benchmark_Append(b *testing.B) {
-	runner := prolog.NewRunner(`
+	runner, _ := prolog.NewRunner(`
 		:- discontiguous(foo/2).
 		zoo(a, 666).
 		zoo(X, Y) :- foo(X, Y).`)
@@ -50,7 +58,7 @@ func Benchmark_Append(b *testing.B) {
 }
 
 func Benchmark_Rebuild(b *testing.B) {
-	runner := prolog.NewRunner(`
+	runner, _ := prolog.NewRunner(`
 		:- discontiguous(foo/2).
 		zoo(a, 666).
 		zoo(X, Y) :- foo(X, Y).`)
