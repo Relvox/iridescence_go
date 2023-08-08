@@ -2,6 +2,8 @@ package prolog
 
 import (
 	"fmt"
+	"reflect"
+	"strings"
 
 	"github.com/ichiban/prolog"
 
@@ -74,7 +76,7 @@ func RunTypedQuery[TResult any](r *Runner, query string) ([]TResult, error) {
 	rawResults, err := r.Query(query)
 	if err != nil {
 		var z TResult
-		return nil, fmt.Errorf("typed [%T] query %s: %w", z, query, err)
+		return nil, fmt.Errorf("typed [%T] %w", z, err)
 	}
 	var results []TResult
 	for _, rawResult := range rawResults {
@@ -85,4 +87,20 @@ func RunTypedQuery[TResult any](r *Runner, query string) ([]TResult, error) {
 		results = append(results, result)
 	}
 	return results, nil
+}
+
+func TypedList[TResult any](r *Runner) ([]TResult, error) {
+	var res TResult
+	t := reflect.TypeOf(res)
+	var fields []string
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		fields = append(fields, field.Name)
+	}
+	query := fmt.Sprintf("%s(%s).",
+		utils.Transcase(t.Name(), utils.PascalCase, utils.SnakeCase),
+		strings.Join(fields, ", "),
+	)
+
+	return RunTypedQuery[TResult](r, query)
 }
