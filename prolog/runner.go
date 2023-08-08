@@ -89,18 +89,55 @@ func RunTypedQuery[TResult any](r *Runner, query string) ([]TResult, error) {
 	return results, nil
 }
 
-func TypedList[TResult any](r *Runner) ([]TResult, error) {
+func TypedListFilter[TResult any](r *Runner, filters ...string) ([]TResult, error) {
 	var res TResult
 	t := reflect.TypeOf(res)
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
 	var fields []string
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
 		fields = append(fields, field.Name)
 	}
-	query := fmt.Sprintf("%s(%s).",
+	filtersStr := strings.Join(filters, ", ")
+	if len(filters) > 0 {
+		filtersStr = ", " + filtersStr
+	}
+	query := fmt.Sprintf("%s(%s)%s.",
 		utils.Transcase(t.Name(), utils.PascalCase, utils.SnakeCase),
 		strings.Join(fields, ", "),
+		filtersStr,
 	)
 
 	return RunTypedQuery[TResult](r, query)
+}
+
+func TypedList[TResult any](r *Runner) ([]TResult, error) {
+	return TypedListFilter[TResult](r)
+}
+
+func InsertObjects[TResult any](r *Runner, objs ...TResult) error {
+	if len(objs) == 0 {
+		return fmt.Errorf("missing objects")
+	}
+	var queries []string
+	for _, obj := range objs {
+		t := reflect.ValueOf(obj)
+		if t.Kind() == reflect.Ptr {
+			t = t.Elem()
+		}
+		var fields []string
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fields = append(fields, fmt.Sprint(field.Interface()))
+		}
+		q := fmt.Sprintf("%s(%s).",
+			utils.Transcase(t.Type().Name(), utils.PascalCase, utils.SnakeCase),
+			strings.Join(fields, ", "),
+		)
+		queries = append(queries, q)
+	}
+	_, err := r.RebuildRunnerWith(strings.Join(queries, "\n"))
+	return err
 }

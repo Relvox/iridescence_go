@@ -87,6 +87,7 @@ func (c StringCase) Parse(phrase string) []string {
 			result = append(result, strings.ToLower(phrase[last:i]))
 			last = i
 		}
+		result = append(result, strings.ToLower(phrase[last:]))
 
 	case SnakeCase:
 		result = strings.Split(phrase, "_")
