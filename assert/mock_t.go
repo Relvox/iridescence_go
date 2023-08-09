@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/relvox/iridescence_go/utils"
+	"golang.org/x/exp/maps"
 )
 
 type MockT struct {
@@ -23,6 +24,6 @@ func (m *MockT) Errorf(format string, args ...any) {
 }
 
 func (m *MockT) Assert(t *testing.T, expectedErrors ...string) {
-	errorValues := utils.Keys(m.Errors)
+	errorValues := maps.Keys(m.Errors)
 	SameElements(t, expectedErrors, errorValues)
 }

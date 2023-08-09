@@ -19,17 +19,6 @@ func MergeMaps[K comparable, V any](target, source map[K]V) map[K]V {
 	return result
 }
 
-// Keys gets a slice of all the keys in a map
-func Keys[K comparable, V any](self map[K]V) []K {
-	var result []K = make([]K, len(self))
-	id := 0
-	for k := range self {
-		result[id] = k
-		id++
-	}
-	return result
-}
-
 // SortedKeys gets a slice of all the keys in a map, sorted
 func SortedKeys[K constraints.Ordered, V any](self map[K]V) []K {
 	var result []K = make([]K, len(self))
@@ -41,17 +30,6 @@ func SortedKeys[K constraints.Ordered, V any](self map[K]V) []K {
 	sort.Slice(result, func(i, j int) bool {
 		return result[i] < result[j]
 	})
-	return result
-}
-
-// Values gets a slice of all the values in a map
-func Values[K comparable, V any](self map[K]V) []V {
-	var result []V = make([]V, len(self))
-	id := 0
-	for _, v := range self {
-		result[id] = v
-		id++
-	}
 	return result
 }
 

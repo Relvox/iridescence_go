@@ -19,11 +19,3 @@ func CloneSliceWithCloner[T any](srcs []T, clone func(T) T) []T {
 	}
 	return result
 }
-
-func CloneMap[K comparable, V any](src map[K]V) map[K]V {
-	result := make(map[K]V)
-	for k, v := range src {
-		result[k] = v
-	}
-	return result
-}

@@ -7,15 +7,18 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-func Abs[N constraints.Integer](i N) N {
+type Number interface {
+	constraints.Integer | constraints.Float
+}
+
+func Abs[N Number](i N) N {
 	if i >= 0 {
 		return i
 	}
 	return -i
-
 }
 
-func Max[N constraints.Integer](vs ...N) N {
+func Max[N Number](vs ...N) N {
 	if len(vs) == 0 {
 		return 0
 	}
@@ -28,7 +31,7 @@ func Max[N constraints.Integer](vs ...N) N {
 	return max
 }
 
-func Min[N constraints.Integer](vs ...N) N {
+func Min[N Number](vs ...N) N {
 	if len(vs) == 0 {
 		return 0
 	}
@@ -41,15 +44,15 @@ func Min[N constraints.Integer](vs ...N) N {
 	return min
 }
 
-func Sum[N constraints.Integer](vs ...N) N {
-	var sum N = 0
+func Sum[S ~[]N, N constraints.Ordered](vs ...N) N {
+	var sum N
 	for _, v := range vs {
 		sum += v
 	}
 	return sum
 }
 
-func GeometricMean[N constraints.Integer](vals ...N) N {
+func GeometricMean[S ~[]N, N constraints.Integer | constraints.Float](vals ...N) N {
 	var prod float64 = 1.0
 	for _, v := range vals {
 		prod *= float64(v)
@@ -57,7 +60,7 @@ func GeometricMean[N constraints.Integer](vals ...N) N {
 	return N(math.Pow(prod, 1.0/float64(len(vals))))
 }
 
-func XenoSum[N constraints.Integer](vals ...N) N {
+func XenoSum[S ~[]N, N constraints.Integer | constraints.Float](vals ...N) N {
 	sort.Slice(vals, func(i, j int) bool {
 		return vals[i] < vals[j]
 	})

@@ -7,7 +7,7 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/relvox/iridescence_go/utils"
+	"golang.org/x/exp/maps"
 )
 
 type AbstractGraph[Node comparable, Edge any] map[Node]map[Node]Edge
@@ -29,7 +29,7 @@ func (g AbstractGraph[Node, Edge]) AddBothEdges(a, b Node, edge Edge) {
 }
 
 func (g AbstractGraph[Node, Edge]) AllNodes() []Node {
-	return utils.Keys(g)
+	return maps.Keys(g)
 }
 
 func (g AbstractGraph[Node, Edge]) EdgesNeighbors(a Node) ([]Edge, []Node) {

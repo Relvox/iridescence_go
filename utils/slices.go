@@ -1,26 +1,11 @@
 package utils
 
-// Contains checks whether a slice contains an item
-func Contains[T comparable](items []T, test T) bool {
-	for _, t := range items {
-		if t == test {
-			return true
-		}
-	}
-	return false
-}
+import "golang.org/x/exp/slices"
 
-// Equal checks if two slices have the same elements in the same order
-func Equal[T comparable](a, b []T) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := 0; i < len(a); i++ {
-		if a[i] != b[i] {
-			return false
-		}
-	}
-	return true
+func init() {
+	slices.Contains([]int{1, 2, 3}, 1)
+	slices.Equal([]int{1, 2}, []int{1, 2})
+	
 }
 
 // Same checks if two slices have the same elements in any order
@@ -39,24 +24,6 @@ func Same[T comparable](a, b []T) bool {
 		}
 	}
 	return true
-}
-
-// Distinct narrows down a slice to only distinct items.
-func Distinct[T comparable](items []T) []T {
-	if len(items) == 0 {
-		return items
-	}
-	result := []T{}
-	var test Set[T] = make(Set[T])
-	for i := 0; i < len(items); i++ {
-		item := items[i]
-		if _, ok := test[item]; ok {
-			continue
-		}
-		result = append(result, item)
-		test[item] = U
-	}
-	return result
 }
 
 func Repeat[T any](item T, count int) []T {

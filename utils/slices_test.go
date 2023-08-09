@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/exp/slices"
 
 	"github.com/relvox/iridescence_go/utils"
 )
@@ -36,7 +37,7 @@ func Test_Intersect(t *testing.T) {
 		t.Run(fmt.Sprint(ti), func(t *testing.T) {
 			actual := utils.Intersect(tt.list1, tt.list2)
 			assert.Equal(t, len(tt.expected), len(actual))
-			assert.True(t, utils.Equal(tt.expected, actual))
+			assert.True(t, slices.Equal(tt.expected, actual))
 		})
 	}
 }

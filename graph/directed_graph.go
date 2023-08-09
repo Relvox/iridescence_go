@@ -1,6 +1,8 @@
 package graph
 
-import "github.com/relvox/iridescence_go/utils"
+import (
+	"golang.org/x/exp/maps"
+)
 
 type DGraph[Node comparable, Edge any] AbstractGraph[Node, Edge]
 
@@ -21,7 +23,7 @@ func (g DGraph[Node, Edge]) AddBothEdges(a, b Node, edge Edge) {
 }
 
 func (g DGraph[Node, Edge]) AllNodes() []Node {
-	return utils.Keys(g)
+	return maps.Keys(g)
 }
 
 func (g DGraph[Node, Edge]) EdgesNeighbors(a Node) ([]Edge, []Node) {
