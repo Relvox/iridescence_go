@@ -130,7 +130,11 @@ func InsertObjects[TResult any](r *Runner, objs ...TResult) error {
 		var fields []string
 		for i := 0; i < t.NumField(); i++ {
 			field := t.Field(i)
-			fields = append(fields, fmt.Sprint(field.Interface()))
+			if str, ok := field.Interface().(string); ok {
+				fields = append(fields, fmt.Sprintf("'%s'", str))
+			} else {
+				fields = append(fields, fmt.Sprint(field.Interface()))
+			}
 		}
 		q := fmt.Sprintf("%s(%s).",
 			utils.Transcase(t.Type().Name(), utils.PascalCase, utils.SnakeCase),

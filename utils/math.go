@@ -44,7 +44,7 @@ func Min[N Number](vs ...N) N {
 	return min
 }
 
-func Sum[S ~[]N, N constraints.Ordered](vs ...N) N {
+func Sum[N constraints.Ordered](vs ...N) N {
 	var sum N
 	for _, v := range vs {
 		sum += v
@@ -52,7 +52,7 @@ func Sum[S ~[]N, N constraints.Ordered](vs ...N) N {
 	return sum
 }
 
-func GeometricMean[S ~[]N, N constraints.Integer | constraints.Float](vals ...N) N {
+func GeometricMean[N constraints.Integer | constraints.Float](vals ...N) N {
 	var prod float64 = 1.0
 	for _, v := range vals {
 		prod *= float64(v)
@@ -60,7 +60,7 @@ func GeometricMean[S ~[]N, N constraints.Integer | constraints.Float](vals ...N)
 	return N(math.Pow(prod, 1.0/float64(len(vals))))
 }
 
-func XenoSum[S ~[]N, N constraints.Integer | constraints.Float](vals ...N) N {
+func XenoSum[N constraints.Integer | constraints.Float](vals ...N) N {
 	sort.Slice(vals, func(i, j int) bool {
 		return vals[i] < vals[j]
 	})
