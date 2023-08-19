@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
 // Unit is an empty struct
@@ -70,26 +72,48 @@ func (s Set[T]) String() string {
 	}
 	return fmt.Sprintf("{ %s }", strings.Join(result, ", "))
 }
-
 func (s Set[T]) MarshalJSON() ([]byte, error) {
-	// Convert the set to a slice
 	slice := make([]T, 0, len(s))
 	for key := range s {
 		slice = append(slice, key)
 	}
 
-	// Marshal the slice
 	return json.Marshal(slice)
 }
 
 func (s *Set[T]) UnmarshalJSON(data []byte) error {
-	// Unmarshal the data into a slice
 	var slice []T
 	if err := json.Unmarshal(data, &slice); err != nil {
 		return err
 	}
 
-	// Convert the slice to a set
+	*s = make(Set[T])
+	for _, elem := range slice {
+		s.Add(elem)
+	}
+
+	return nil
+}
+
+func (s Set[T]) MarshalYAML() (interface{}, error) {
+	slice := make([]T, 0, len(s))
+	for key := range s {
+		slice = append(slice, key)
+	}
+	return slice, nil
+}
+
+func (s *Set[T]) UnmarshalYAML(value *yaml.Node) error {
+	var slice []T
+	for _, v := range value.Content {
+		var t T
+		err := v.Decode(&t)
+		if err != nil {
+			return err
+		}
+		slice = append(slice, t)
+	}
+
 	*s = make(Set[T])
 	for _, elem := range slice {
 		s.Add(elem)

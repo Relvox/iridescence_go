@@ -29,6 +29,9 @@ func (h *TeeHandler) Enabled(ctx context.Context, lvl slog.Level) bool {
 func (h *TeeHandler) Handle(ctx context.Context, record slog.Record) error {
 	var errs []error
 	for _, handler := range h.Handlers {
+		if !handler.Enabled(ctx, record.Level) {
+			continue
+		}
 		err := handler.Handle(ctx, record)
 		if err != nil {
 			errs = append(errs, err)
