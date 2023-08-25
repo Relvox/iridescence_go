@@ -3,7 +3,7 @@ package logging
 import "log/slog"
 
 func Error(err error) slog.Attr {
-	if err != nil {
+	if err == nil {
 		return slog.Attr{
 			Key:   "error",
 			Value: slog.StringValue("nil"),

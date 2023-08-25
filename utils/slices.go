@@ -1,13 +1,5 @@
 package utils
 
-import "golang.org/x/exp/slices"
-
-func init() {
-	slices.Contains([]int{1, 2, 3}, 1)
-	slices.Equal([]int{1, 2}, []int{1, 2})
-	
-}
-
 // Same checks if two slices have the same elements in any order
 func Same[T comparable](a, b []T) bool {
 	if len(a) != len(b) {
@@ -47,4 +39,22 @@ func Intersect[T comparable](list1, list2 []T) []T {
 		result = append(result, v)
 	}
 	return result
+}
+
+func Crop[T any](slice []T, index int) []T {
+	if index < 0 || index >= len(slice) {
+		return slice
+	}
+	if len(slice) == 1 {
+		return []T{}
+	}
+	if index == 0 {
+		return slice[1:]
+	}
+	if index == len(slice)-1 {
+		return slice[:index]
+	}
+	left := slice[:index]
+	right := slice[index+1:]
+	return append(left, right...)
 }

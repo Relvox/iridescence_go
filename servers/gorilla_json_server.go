@@ -60,6 +60,7 @@ func RouterHandleGet[TOut any](
 
 		log.Debug("request response", slog.String("url", r.RequestURI), slog.Any("response", response))
 	}).Methods("GET")
+	log.Debug("handle GET JSON", slog.String("url", url))
 }
 
 func RouterHandleGetHTML(
@@ -87,6 +88,7 @@ func RouterHandleGetHTML(
 
 		log.Debug("request response", slog.String("url", r.RequestURI), slog.Int("response", n))
 	}).Methods("GET")
+	log.Debug("handle GET HTML", slog.String("url", url))
 }
 
 func RouterHandlePost[TIn any, TOut any](
@@ -122,6 +124,7 @@ func RouterHandlePost[TIn any, TOut any](
 
 		log.Debug("request response", slog.String("url", r.RequestURI), slog.Any("response", response))
 	}).Methods("POST")
+	log.Debug("handle POST JSON", slog.String("url", url))
 }
 
 func RouterHandlePostHTML[TIn any](
@@ -158,4 +161,5 @@ func RouterHandlePostHTML[TIn any](
 
 		log.Debug("request response", slog.String("url", r.RequestURI), slog.Int("response", n))
 	}).Methods("POST")
+	log.Debug("handle POST HTML", slog.String("url", url))
 }
