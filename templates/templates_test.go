@@ -2,8 +2,8 @@ package templates
 
 import (
 	"bytes"
+	"html/template"
 	"testing"
-	"text/template"
 )
 
 func TestApplyTemplateFunc(t *testing.T) {

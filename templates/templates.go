@@ -2,7 +2,7 @@ package templates
 
 import (
 	"bytes"
-	"text/template"
+	"html/template"
 )
 
 func ApplyTemplateFuncGen(t *template.Template) func(string, any) (string, error) {
