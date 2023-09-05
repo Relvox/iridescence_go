@@ -43,7 +43,7 @@ func RouterHandleTemplateRequest[TData, TIn any](
 	template *template.Template,
 	handler func(request TIn) (TData, error),
 ) {
-	hFunc := handleFunc[TIn, TData]{handlerR: handler}
+	hFunc := handleFunc[TIn, TData]{handlerR: handler, decodeRequest: formRequestDecoder[TIn]}
 	unifiedRouteHandler[TIn, TData](r, log, method, url, hFunc, templateResponseWriterFor[TData](template))
 	log.Debug("handle HTML template", slog.String("method", string(method)), slog.String("url", url), slog.String("template", template.Name()))
 }
@@ -56,7 +56,7 @@ func RouterHandleTemplateRequestVars[TData, TIn any](
 	template *template.Template,
 	handler func(request TIn, vars map[string]string) (TData, error),
 ) {
-	hFunc := handleFunc[TIn, TData]{handlerRV: handler}
+	hFunc := handleFunc[TIn, TData]{handlerRV: handler, decodeRequest: formRequestDecoder[TIn]}
 	unifiedRouteHandler[TIn, TData](r, log, method, url, hFunc, templateResponseWriterFor[TData](template))
 	log.Debug("handle HTML template", slog.String("method", string(method)), slog.String("url", url), slog.String("template", template.Name()))
 }

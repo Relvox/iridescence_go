@@ -5,13 +5,13 @@ import (
 	"html/template"
 )
 
-func ApplyTemplateFuncGen(t *template.Template) func(string, any) (string, error) {
-	return func(templateName string, data any) (string, error) {
+func ApplyTemplateFuncGen(t *template.Template) func(string, interface{}) (template.HTML, error) {
+	return func(templateName string, data interface{}) (template.HTML, error) {
 		var buf bytes.Buffer
 		err := t.ExecuteTemplate(&buf, templateName, data)
 		if err != nil {
 			return "", err
 		}
-		return buf.String(), nil
+		return template.HTML(buf.String()), nil
 	}
 }

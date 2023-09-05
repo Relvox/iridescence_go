@@ -1,40 +1,11 @@
 package servers
 
 import (
-	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
-
-type handleFunc[TIn, TOut any] struct {
-	handler   func() (TOut, error)
-	handlerV  func(vars map[string]string) (TOut, error)
-	handlerR  func(request TIn) (TOut, error)
-	handlerRV func(request TIn, vars map[string]string) (TOut, error)
-}
-
-func (h *handleFunc[TIn, TOut]) validate() error {
-	handlers := 0
-	if h.handler != nil {
-		handlers++
-	}
-	if h.handlerV != nil {
-		handlers++
-	}
-	if h.handlerR != nil {
-		handlers++
-	}
-	if h.handlerRV != nil {
-		handlers++
-	}
-	if handlers == 1 {
-		return nil
-	}
-	return fmt.Errorf("exactly one handler must be set")
-}
 
 func unifiedRouteHandler[TIn any, TOut any](
 	r *mux.Router,
@@ -69,12 +40,11 @@ func unifiedRouteHandler[TIn any, TOut any](
 
 		case handler.handlerR != nil:
 			var request TIn
-			err = json.NewDecoder(r.Body).Decode(&request)
+			request, err = handler.decodeRequest(r)
 			if err != nil {
 				writeErrorResponse(log, r, w, ToBadRequestError(err))
 				return
 			}
-			defer r.Body.Close()
 			log.Debug("request body", slog.String("url", r.RequestURI), slog.Any("body", request))
 			response, err = handler.handlerR(request)
 
@@ -83,12 +53,11 @@ func unifiedRouteHandler[TIn any, TOut any](
 			log.Info("handle request", slog.String("url", r.RequestURI), slog.Any("vars", vars))
 
 			var request TIn
-			err = json.NewDecoder(r.Body).Decode(&request)
+			request, err = handler.decodeRequest(r)
 			if err != nil {
 				writeErrorResponse(log, r, w, ToBadRequestError(err))
 				return
 			}
-			defer r.Body.Close()
 			log.Debug("request body", slog.String("url", r.RequestURI), slog.Any("body", request))
 			response, err = handler.handlerRV(request, vars)
 		}
