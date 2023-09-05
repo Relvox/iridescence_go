@@ -32,26 +32,26 @@ func RouterHandleRedirectVars(
 	log.Debug("handle Redirect", slog.String("method", string(method)), slog.String("url", url))
 }
 
-// func RouterHandleRedirectRequest[TIn any](
-// 	r *mux.Router,
-// 	log *slog.Logger,
-// 	method HttpMethod,
-// 	url string,
-// 	handler func(request TIn) (string, error),
-// ) {
-// 	hFunc := handleFunc[TIn, string]{handlerR: handler}
-// 	unifiedRouteHandler[TIn, string](r, log, method, url, hFunc, redirectResponseWriter)
-// 	log.Debug("handle Redirect", slog.String("method", string(method)), slog.String("url", url))
-// }
+func RouterHandleRedirectRequest[TIn any](
+	r *mux.Router,
+	log *slog.Logger,
+	method HttpMethod,
+	url string,
+	handler func(request TIn) (string, error),
+) {
+	hFunc := handleFunc[TIn, string]{handlerR: handler, decodeRequest: formRequestDecoder[TIn]}
+	unifiedRouteHandler[TIn, string](r, log, method, url, hFunc, redirectResponseWriter)
+	log.Debug("handle Redirect", slog.String("method", string(method)), slog.String("url", url))
+}
 
-// func RouterHandleRedirectRequestVars[TIn any](
-// 	r *mux.Router,
-// 	log *slog.Logger,
-// 	method HttpMethod,
-// 	url string,
-// 	handler func(request TIn, vars map[string]string) (string, error),
-// ) {
-// 	hFunc := handleFunc[TIn, string]{handlerRV: handler}
-// 	unifiedRouteHandler[TIn, string](r, log, method, url, hFunc, redirectResponseWriter)
-// 	log.Debug("handle Redirect", slog.String("method", string(method)), slog.String("url", url))
-// }
+func RouterHandleRedirectRequestVars[TIn any](
+	r *mux.Router,
+	log *slog.Logger,
+	method HttpMethod,
+	url string,
+	handler func(request TIn, vars map[string]string) (string, error),
+) {
+	hFunc := handleFunc[TIn, string]{handlerRV: handler, decodeRequest: formRequestDecoder[TIn]}
+	unifiedRouteHandler[TIn, string](r, log, method, url, hFunc, redirectResponseWriter)
+	log.Debug("handle Redirect", slog.String("method", string(method)), slog.String("url", url))
+}
