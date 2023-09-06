@@ -59,7 +59,7 @@ func Crop[T any](slice []T, index int) []T {
 	return append(left, right...)
 }
 
-func Find[E ~[]T, T any](list E, pred func(T) bool) (T, bool) {
+func FindPred[E ~[]T, T any](list E, pred func(T) bool) (T, bool) {
 	for i := range list {
 		if pred(list[i]) {
 			return list[i], true
@@ -67,4 +67,12 @@ func Find[E ~[]T, T any](list E, pred func(T) bool) (T, bool) {
 	}
 	var t T
 	return t, false
+}
+
+func Last[E ~[]T, T any](list E) (T, bool) {
+	if len(list) == 0 {
+		var t T
+		return t, false
+	}
+	return list[len(list)-1], true
 }
