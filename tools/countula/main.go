@@ -78,7 +78,7 @@ func main() {
 				if len(regex.FindAllString(line, -1)) > 2 {
 					extension := filepath.Ext(path)
 					subfolder := filepath.Dir(path)
-					countByExtension[extension]++
+					countByExtension[strings.TrimPrefix(extension, ".")]++
 					countBySubfolder[subfolder]++
 				}
 			}
@@ -96,7 +96,8 @@ func main() {
 	}
 	var total int
 	fmt.Println("Count by extension:")
-	for ext, count := range countByExtension {
+	for _, ext := range extensions {
+		count := countByExtension[strings.TrimPrefix(ext, ".")]
 		fmt.Printf("  %s: %d\n", ext, count)
 		total += count
 	}
