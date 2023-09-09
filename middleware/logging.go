@@ -73,16 +73,18 @@ func LoggingMiddleware(log *slog.Logger, opts ...LoggingOptions) mux.MiddlewareF
 				queries := r.URL.Query()
 				logFields = append(logFields, slog.String("url_queries", queries.Encode()))
 			}
-			if config.LogContentType() {
-				logFields = append(logFields, slog.String("content_type", r.Header.Get("Content-Type")))
-			}
-			if config.LogRequest() {
-				bodyBytes, err := io.ReadAll(r.Body)
-				if err != nil {
-					log.Error("reading body", logging.Error(err))
+			if r.Method != "GET" && r.Method != "DELETE" {
+				if config.LogContentType() {
+					logFields = append(logFields, slog.String("content_type", r.Header.Get("Content-Type")))
 				}
-				logFields = append(logFields, slog.String("request_body", string(bodyBytes)))
-				r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+				if config.LogRequest() {
+					bodyBytes, err := io.ReadAll(r.Body)
+					if err != nil {
+						log.Error("reading body", logging.Error(err))
+					}
+					logFields = append(logFields, slog.String("request_body", string(bodyBytes)))
+					r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+				}
 			}
 			log.Info("Incoming Request", logFields...)
 

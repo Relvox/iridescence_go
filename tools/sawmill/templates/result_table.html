@@ -1,3 +1,40 @@
 <div id="results" hx-swap-oob="true">
-<div>{{ . }}</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Level</th>
+                <th>Message</th>
+                <th>Source</th>
+                <th>Fields</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{- range .Events -}}
+            <tr>
+                <td style="min-width: 100px;" class="cell{{ .Level }}">{{ .Time }}</td>
+                <td style="min-width: 50px;" class="cell{{ .Level }}">{{ .Level }}</td>
+                <td style="min-width: 200px;" class="cell{{ .Level }}">{{ .Message }}</td>
+                <td style="min-width: 60px;" class="cell{{ .Level }}">
+
+                    <div class="icon-container">
+                        <img width="32px" height="32px" src="/sourceicon.png" style="z-index: 999;">
+                        <pre class="tooltip" style="z-index: 1000;">{{ .Source }}</pre>
+                    </div>
+                </td>
+                <td style="min-width: 100px;" class="cell{{ .Level }}">
+                    {{- range $k, $v := .Object -}}
+                    {{ $k }}=<span style="background-color: #0F02;" title="{{ $v }}">
+                        {{- if lt (len $v) 100 -}}
+                        {{- $v -}}
+                        {{- else -}}
+                        ...
+                        {{- end -}}
+                    </span>&nbsp;
+                    {{- end -}}
+                </td>
+            </tr>
+            {{- end -}}
+        </tbody>
+    </table>
 </div>

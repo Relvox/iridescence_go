@@ -22,7 +22,7 @@ func main() {
 
 	servers.ConfigureAndListen(*addrFlag,
 		servers.DefaultHeaders, []string{"*"}, servers.DefaultMethods,
-		log, middleware.AllOptions-middleware.UserAgent,
+		log, middleware.AllOptions-middleware.UserAgent-middleware.Response-middleware.RequestID,
 		sawmillServ,
 		&sfServ,
 	)

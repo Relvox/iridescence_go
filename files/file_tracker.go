@@ -3,22 +3,23 @@ package files
 import (
 	"os"
 	"sync"
+	"time"
 )
 
 type FileTracker struct {
 	FilePath string
 
-	mu       sync.RWMutex
-	content  []byte
-	fileSize int64
+	mu            sync.RWMutex
+	content       []byte
+	LastWriteTime time.Time
 }
 
 func NewFileTracker(filepath string) *FileTracker {
 	result := &FileTracker{
-		FilePath: filepath,
-		mu:       sync.RWMutex{},
-		content:  []byte{},
-		fileSize: 0,
+		FilePath:      filepath,
+		mu:            sync.RWMutex{},
+		content:       []byte{},
+		LastWriteTime: time.Time{},
 	}
 	if err := result.Refresh(); err != nil {
 		panic(err)
@@ -35,7 +36,7 @@ func (fw *FileTracker) Refresh() error {
 		return err
 	}
 
-	if info.Size() == fw.fileSize {
+	if info.ModTime().Equal(fw.LastWriteTime) {
 		return nil
 	}
 
@@ -45,7 +46,7 @@ func (fw *FileTracker) Refresh() error {
 	}
 
 	fw.content = content
-	fw.fileSize = info.Size()
+	fw.LastWriteTime = info.ModTime()
 	return nil
 }
 
