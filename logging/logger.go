@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"log/slog"
 
@@ -11,7 +12,10 @@ import (
 )
 
 func NewLogger(logPath string, fileLevel, stdoutLevel slog.Level) *slog.Logger {
-	logFile, err := os.OpenFile(logPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	dir, name  := filepath.Dir(logPath), filepath.Base(logPath)
+	file := fmt.Sprintf("%s/%s_%s", dir, utils.TimestampNow(), name)
+	os.MkdirAll(dir, 0644)
+	logFile, err := os.OpenFile(file, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		panic(fmt.Errorf("create or append to log file: %w", err))
 	}

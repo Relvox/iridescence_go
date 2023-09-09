@@ -1,4 +1,4 @@
-package utils
+package files
 
 import (
 	"os"
@@ -21,4 +21,15 @@ func GetFilenames(directory string, extension string) ([]string, error) {
 		return nil, err
 	}
 	return files, nil
+}
+
+func Split(file string) (dir string, name string, ext string) {
+	dir = filepath.Dir(file)
+	ext = filepath.Ext(file)
+	name = strings.TrimSuffix(filepath.Base(file), ext)
+	return
+}
+
+func IsolateName(file string) string {
+	return strings.TrimSuffix(filepath.Base(file), filepath.Ext(file))
 }

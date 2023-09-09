@@ -1,0 +1,9 @@
+<div id="log_file_selector" hx-swap-oob="true">
+    <select id="files" name="files" multiple hx-post="/select" hx-trigger="change" size="{{ len .Paths }}">
+        {{- range .Paths -}}
+        <option value="{{ . }}" {{ if contains $.SelectedFiles . }}selected class="selectedOption" {{ end }}>
+            {{- . -}}
+        </option>
+        {{- end -}}
+    </select>
+</div>

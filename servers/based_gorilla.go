@@ -70,7 +70,5 @@ func unifiedRouteHandler[TIn any, TOut any](
 		if err = responseWriter(w, r, response); err != nil {
 			writeErrorResponse(log, r, w, ToInternalError(err))
 		}
-
-		log.Debug("request response", slog.String("url", r.RequestURI))
 	}).Methods(string(method))
 }

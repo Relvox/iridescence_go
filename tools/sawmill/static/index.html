@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>HTMX Go App</title>
+    <script src="https://unpkg.com/htmx.org@1.9.5"
+        integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <div id="collapsible-panel">
+        <div>Files:</div>
+        <div id="log_file_selector" hx-trigger="load" hx-get="/log_file_selector"></div>
+    </div>
+
+    <div id="main-content">
+        <div class="flex-container">
+            <button id="toggle-button" onclick="togglePanel()">Toggle Panel</button>
+            <label class="query-label" for="query">Query: <a href="https://regex101.com/">(Regexp)</a></label>
+            <form hx-post="/query" hx-target="#results">
+                <input type="text" id="query" name="query" class="query">
+                <input type="submit" value="Submit">
+                <a
+                    title="only lowercase -> case insensitive&#13;&#10;&#13;&#10;Some UpperCase -> Case Sensitive&#13;&#10;&#13;&#10;!alphanum -> regex">?</a>
+            </form>
+        </div>
+        <div style="clear: both;">
+            <div hx-get="/query_field" hx-trigger="load" hx-target="#query"></div>
+        </div>
+        <div id="results" hx-get="/result_table" hx-trigger="load" hx-swap="outerHTML">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+</body>
+
+</html>
