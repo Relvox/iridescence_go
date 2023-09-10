@@ -71,7 +71,7 @@ func LoggingMiddleware(log *slog.Logger, opts ...LoggingOptions) mux.MiddlewareF
 			}
 			if config.LogQuery() {
 				queries := r.URL.Query()
-				logFields = append(logFields, slog.String("url_queries", queries.Encode()))
+				logFields = append(logFields, slog.String("url_query", queries.Encode()))
 			}
 			if r.Method != "GET" && r.Method != "DELETE" {
 				if config.LogContentType() {

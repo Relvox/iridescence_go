@@ -1,4 +1,4 @@
-package servers
+package main
 
 type LogLine struct {
 	Time    string

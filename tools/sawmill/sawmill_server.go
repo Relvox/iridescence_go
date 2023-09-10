@@ -1,8 +1,10 @@
-package servers
+package main
 
 import (
 	"encoding/json"
+	"html"
 	"html/template"
+	"io/fs"
 	"log/slog"
 	"reflect"
 	"regexp"
@@ -13,12 +15,13 @@ import (
 	"github.com/relvox/iridescence_go/files"
 	"github.com/relvox/iridescence_go/logging"
 	"github.com/relvox/iridescence_go/servers"
+	"github.com/relvox/iridescence_go/templates"
 	"github.com/relvox/iridescence_go/utils"
 )
 
 type SawmillServer struct {
-	Paths    []string
-	TmplPath string
+	Paths     []string
+	GetTmplFS func() fs.FS
 
 	SelectedFiles []string
 	Query         string
@@ -29,7 +32,7 @@ type SawmillServer struct {
 	Log *slog.Logger
 }
 
-func NewSawmillServer(logPath, tmplPath string, log *slog.Logger) *SawmillServer {
+func NewSawmillServer(logPath string, getTmplFS func() fs.FS, log *slog.Logger) *SawmillServer {
 	logFiles, err := files.GetFilenames(logPath, "log")
 	if err != nil {
 		log.Error("failed to get template filenames", logging.Error(err))
@@ -37,10 +40,11 @@ func NewSawmillServer(logPath, tmplPath string, log *slog.Logger) *SawmillServer
 	slices.Reverse(logFiles)
 	return &SawmillServer{
 		Paths:         logFiles,
-		TmplPath:      tmplPath,
+		GetTmplFS:     getTmplFS,
 		SelectedFiles: make([]string, 0),
 		Query:         "",
 		Trackers:      map[string]*files.FileTracker{},
+		CurrentLines:  []string{},
 		Log:           log,
 	}
 }
@@ -66,10 +70,11 @@ func (s *SawmillServer) UpdateSelection(selected []string) error {
 }
 
 var onlyLowercase = regexp.MustCompile(`^[\"a-z0-9\s._\-\:]+$`)
-var containsRegex = regexp.MustCompile(`[$*+?{}\[\]\\|()]`)
+var containsRegex = regexp.MustCompile(`[$*+?{}\[\]\\|()\^]`)
 var splitRegex = regexp.MustCompile(`"(.*?)"|\S+`)
 
 func (s *SawmillServer) ExecuteQuery(query string) error {
+	query = html.UnescapeString(query)
 	s.Query = query
 	s.CurrentLines = make([]string, 0)
 	if containsRegex.Match([]byte(query)) {
@@ -132,11 +137,7 @@ func (s *SawmillServer) ExecuteQuery(query string) error {
 }
 
 func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
-	tmplFiles, err := files.GetFilenames(s.TmplPath, "html")
-	if err != nil {
-		s.Log.Error("failed to get template filenames", logging.Error(err))
-	}
-	rootTmpl := template.New("root").Funcs(template.FuncMap{
+	funcMap := template.FuncMap{
 		"contains": func(s reflect.Value, k reflect.Value) bool {
 			for i := 0; i < s.Len(); i++ {
 				if s.Index(i).Interface() == k.Interface() {
@@ -145,14 +146,15 @@ func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
 			}
 			return false
 		},
-	})
+	}
 
-	rootTmpl, err = rootTmpl.ParseFiles(tmplFiles...)
+	rootTmpl := template.New("root").Funcs(funcMap)
+	rootTmpl, err := rootTmpl.ParseFS(s.GetTmplFS(), "*")
 	if err != nil {
 		panic(err)
 	}
-	templates := rootTmpl.Templates()
-	for _, t := range templates {
+	tmpls := rootTmpl.Templates()
+	for _, t := range tmpls {
 		s.Log.Info("loaded template", slog.String("name", t.Name()))
 
 		servers.RouterHandleTemplate[*SawmillServer](
@@ -169,10 +171,9 @@ func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
 	}
 	servers.RouterHandleTemplatesRequest[map[string]any, files_form](
 		r, s.Log,
-		servers.POST, "/select", []*template.Template{
-			rootTmpl.Lookup("log_file_selector.html"),
-			rootTmpl.Lookup("result_table.html"),
-		}, func(form files_form) (map[string]any, error) {
+		servers.POST, "/select",
+		templates.LiveLookup(funcMap, s.GetTmplFS, "log_file_selector.html", "result_table.html"),
+		func(form files_form) (map[string]any, error) {
 			s.UpdateSelection(form.Files)
 			return map[string]any{
 				"log_file_selector.html": s,
@@ -187,7 +188,7 @@ func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
 
 	servers.RouterHandleTemplateRequest[*SawmillServer](
 		r, s.Log,
-		servers.POST, "/query", rootTmpl.Lookup("result_table.html"),
+		servers.POST, "/query", templates.LiveLookup(funcMap, s.GetTmplFS, "result_table.html")[0],
 		func(form query_form) (*SawmillServer, error) {
 			s.ExecuteQuery(form.Query)
 			return s, nil

@@ -7,7 +7,6 @@ import (
 	"github.com/relvox/iridescence_go/logging"
 	"github.com/relvox/iridescence_go/middleware"
 	"github.com/relvox/iridescence_go/servers"
-	sm_serv "github.com/relvox/iridescence_go/tools/sawmill/servers"
 )
 
 func main() {
@@ -15,15 +14,22 @@ func main() {
 	dirFlag := flag.String("dir", ".", "Directory to serve logs from")
 	logFlag := flag.String("log", "self.log", "name of own log")
 	flag.Parse()
-	log := logging.NewLogger(*logFlag, slog.LevelInfo, slog.LevelDebug)
+	log := logging.NewLogger(
+		logging.LoggingOptions{},
+		logging.LoggingOptions{
+			Target:                 *logFlag,
+			PrefixFilenameWithTime: true,
+			AddSource:              true,
+			Level:                  slog.LevelDebug,
+			JsonHandler:            true,
+		})
 
-	sawmillServ := sm_serv.NewSawmillServer(*dirFlag, "./templates/", log)
-	sfServ := sm_serv.StaticFileServer("./static/")
+	sawmillServ := NewSawmillServer(*dirFlag, getTemplatesFS, log)
 
 	servers.ConfigureAndListen(*addrFlag,
 		servers.DefaultHeaders, []string{"*"}, servers.DefaultMethods,
 		log, middleware.AllOptions-middleware.UserAgent-middleware.Response-middleware.RequestID,
 		sawmillServ,
-		&sfServ,
+		staticFileServer,
 	)
 }

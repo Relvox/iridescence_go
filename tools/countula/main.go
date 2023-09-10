@@ -11,18 +11,17 @@ import (
 )
 
 func main() {
-	// Step 1: Define flags
 	pathPtr := flag.String("path", ".", "path to the folder (default: current folder)")
 	extensionsPtr := flag.String("extensions", "", "file extensions to include (comma separated)")
 	excludesPtr := flag.String("excludes", "", "paths to exclude (comma separated)")
 	gitignorePtr := flag.Bool("gitignore", true, "whether to use .gitignore (default: true)")
 	dirsPtr := flag.Bool("dirs", false, "show by dir (default: false)")
+	flag.Parse()
 
+	// // Debug flags
 	// x, y := "../../../TGD", "json"
 	// extensionsPtr = &y
 	// pathPtr = &x
-
-	flag.Parse()
 
 	extensions := strings.Split(*extensionsPtr, ",")
 	excludes := strings.Split(*excludesPtr, ",")
@@ -30,7 +29,6 @@ func main() {
 	gitIgnorePatterns := []string{}
 	if *gitignorePtr {
 		gitIgnorePath := filepath.Join(*pathPtr, ".gitignore")
-		// Step 2: Read .gitignore and store patterns in a slice
 		file, err := os.Open(gitIgnorePath)
 		if err == nil {
 			scanner := bufio.NewScanner(file)
@@ -52,7 +50,6 @@ func main() {
 			return err
 		}
 
-		// Step 3: Skip .git folder and files matching .gitignore patterns
 		if strings.HasSuffix(path, ".git") || matchesGitIgnore(path, gitIgnorePatterns) || matchesExcludes(path, excludes) {
 			if info.IsDir() {
 				return filepath.SkipDir
