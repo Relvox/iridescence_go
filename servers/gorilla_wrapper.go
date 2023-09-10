@@ -9,7 +9,6 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/relvox/iridescence_go/logging"
-	"github.com/relvox/iridescence_go/middleware"
 )
 
 var (
@@ -21,7 +20,7 @@ type SupportedServer interface {
 	RegisterRoutes(r *mux.Router)
 }
 
-func ConfigureAndListen(address string, headers, origins, methods []string, log *slog.Logger, logOpts middleware.LoggingOptions, servers ...SupportedServer) {
+func ConfigureAndListen(address string, headers, origins, methods []string, log *slog.Logger, mws []mux.MiddlewareFunc, servers ...SupportedServer) {
 	router := mux.NewRouter()
 	headersOk := handlers.AllowedHeaders(headers)
 	originsOk := handlers.AllowedOrigins(origins)
@@ -33,8 +32,8 @@ func ConfigureAndListen(address string, headers, origins, methods []string, log 
 	}
 
 	log.Info("Started Listening", slog.String("address", address))
-	err := http.ListenAndServe(address, handlers.CORS(originsOk, headersOk, methodsOk)(
-		middleware.LoggingMiddleware(log, logOpts)(router)))
+	router.Use(mws...)
+	err := http.ListenAndServe(address, handlers.CORS(originsOk, headersOk, methodsOk)(router))
 	if err != http.ErrServerClosed {
 		log.Error("server crashed", logging.Error(err))
 	}
