@@ -1,6 +1,7 @@
 package files
 
 import (
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -32,4 +33,18 @@ func Split(file string) (dir string, name string, ext string) {
 
 func IsolateName(file string) string {
 	return strings.TrimSuffix(filepath.Base(file), filepath.Ext(file))
+}
+
+func ListFS(fsys fs.FS, root string) ([]string, error) {
+	var result []string
+	err := fs.WalkDir(fsys, root, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if !d.IsDir() {
+			result = append(result, path)
+		}
+		return nil
+	})
+	return result, err
 }
