@@ -1,5 +1,0 @@
-package iridescence
-
-func init() {
-
-}
