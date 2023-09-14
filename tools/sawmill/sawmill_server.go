@@ -6,6 +6,8 @@ import (
 	"html/template"
 	"io/fs"
 	"log/slog"
+	"os"
+	"path/filepath"
 	"reflect"
 	"regexp"
 	"slices"
@@ -33,7 +35,7 @@ type SawmillServer struct {
 }
 
 func NewSawmillServer(logPath string, getTmplFS func() fs.FS, log *slog.Logger) *SawmillServer {
-	logFiles, err := files.GetFilenames(logPath, "log")
+	logFiles, err := files.ListFS(os.DirFS(filepath.Dir(logPath)), ".", "*.log")
 	if err != nil {
 		log.Error("failed to get template filenames", logging.Error(err))
 	}
