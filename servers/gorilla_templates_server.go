@@ -6,8 +6,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-
-	"github.com/relvox/iridescence_go/utils"
+	"github.com/relvox/iridescence_go/sets"
 )
 
 func getTemplateNames(templates []*template.Template) string {
@@ -24,8 +23,8 @@ func RouterHandleTemplates[TData ~map[string]any](
 	templates []*template.Template,
 	handler func() (TData, error),
 ) {
-	hFunc := handleFunc[utils.Unit, TData]{handler: handler}
-	unifiedRouteHandler[utils.Unit, TData](r, log, method, url, hFunc, templatesResponseWriterFor[TData](templates))
+	hFunc := handleFunc[sets.Unit, TData]{handler: handler}
+	unifiedRouteHandler[sets.Unit, TData](r, log, method, url, hFunc, templatesResponseWriterFor[TData](templates))
 	log.Debug("handle HTML templates", slog.String("method", string(method)), slog.String("url", url), slog.String("templates", getTemplateNames(templates)))
 }
 
@@ -35,8 +34,8 @@ func RouterHandleTemplatesVars[TData ~map[string]any](
 	templates []*template.Template,
 	handler func(vars map[string]string) (TData, error),
 ) {
-	hFunc := handleFunc[utils.Unit, TData]{handlerV: handler}
-	unifiedRouteHandler[utils.Unit, TData](r, log, method, url, hFunc, templatesResponseWriterFor[TData](templates))
+	hFunc := handleFunc[sets.Unit, TData]{handlerV: handler}
+	unifiedRouteHandler[sets.Unit, TData](r, log, method, url, hFunc, templatesResponseWriterFor[TData](templates))
 	log.Debug("handle HTML templates", slog.String("method", string(method)), slog.String("url", url), slog.String("templates", getTemplateNames(templates)))
 }
 

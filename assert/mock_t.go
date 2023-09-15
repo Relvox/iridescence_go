@@ -4,17 +4,18 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/relvox/iridescence_go/utils"
 	"golang.org/x/exp/maps"
+	
+	"github.com/relvox/iridescence_go/sets"
 )
 
 type MockT struct {
-	Errors utils.Set[string]
+	Errors sets.Set[string]
 }
 
 func NewMockT() *MockT {
 	return &MockT{
-		Errors: make(utils.Set[string]),
+		Errors: make(sets.Set[string]),
 	}
 }
 

@@ -1,7 +1,7 @@
 package prototyping
 
 import (
-	"github.com/relvox/iridescence_go/utils"
+	"github.com/relvox/iridescence_go/sets"
 )
 
 type Entity struct {
@@ -9,7 +9,7 @@ type Entity struct {
 	Name       string            `json:"Name"`
 	Properties map[string]string `json:"Properties"`
 	Stats      map[string]int    `json:"Stats"`
-	Tags       utils.Set[string] `json:"Tags"`
+	Tags       sets.Set[string]  `json:"Tags"`
 }
 
 func NewEntity(id int, name string) *Entity {
@@ -18,7 +18,7 @@ func NewEntity(id int, name string) *Entity {
 		Name:       name,
 		Properties: make(map[string]string),
 		Stats:      make(map[string]int),
-		Tags:       utils.NewSet[string](),
+		Tags:       sets.NewSet[string](),
 	}
 }
 
@@ -47,6 +47,6 @@ func (e *Entity) WithStat(key string, value int) *Entity {
 }
 
 func (e *Entity) WithTag(key string) *Entity {
-	e.Tags[key] = utils.U
+	e.Tags[key] = sets.U
 	return e
 }

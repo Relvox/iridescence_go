@@ -4,10 +4,10 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/relvox/iridescence_go/utils"
+	"github.com/relvox/iridescence_go/sets"
 )
 
-type NullHandler utils.Unit
+type NullHandler sets.Unit
 
 func (h NullHandler) Enabled(_ context.Context, _ slog.Level) bool {
 	return false

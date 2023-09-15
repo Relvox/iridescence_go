@@ -1,5 +1,7 @@
 package utils
 
+import "github.com/relvox/iridescence_go/sets"
+
 // Same checks if two slices have the same elements in any order
 func Same[T comparable](a, b []T) bool {
 	if len(a) != len(b) {
@@ -27,9 +29,9 @@ func Repeat[T any](item T, count int) []T {
 }
 
 func Intersect[T comparable](list1, list2 []T) []T {
-	var set Set[T] = make(Set[T])
+	var set sets.Set[T] = make(sets.Set[T])
 	for _, v := range list1 {
-		set[v] = U
+		set[v] = sets.U
 	}
 	var result []T
 	for _, v := range list2 {

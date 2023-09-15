@@ -4,8 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/gorilla/mux"
-
-	"github.com/relvox/iridescence_go/utils"
+	"github.com/relvox/iridescence_go/sets"
 )
 
 func RouterHandleRedirect(
@@ -15,8 +14,8 @@ func RouterHandleRedirect(
 	url string,
 	handler func() (string, error),
 ) {
-	hFunc := handleFunc[utils.Unit, string]{handler: handler}
-	unifiedRouteHandler[utils.Unit, string](r, log, method, url, hFunc, redirectResponseWriter)
+	hFunc := handleFunc[sets.Unit, string]{handler: handler}
+	unifiedRouteHandler[sets.Unit, string](r, log, method, url, hFunc, redirectResponseWriter)
 	log.Debug("handle Redirect", slog.String("method", string(method)), slog.String("url", url))
 }
 
@@ -27,8 +26,8 @@ func RouterHandleRedirectVars(
 	url string,
 	handler func(vars map[string]string) (string, error),
 ) {
-	hFunc := handleFunc[utils.Unit, string]{handlerV: handler}
-	unifiedRouteHandler[utils.Unit, string](r, log, method, url, hFunc, redirectResponseWriter)
+	hFunc := handleFunc[sets.Unit, string]{handlerV: handler}
+	unifiedRouteHandler[sets.Unit, string](r, log, method, url, hFunc, redirectResponseWriter)
 	log.Debug("handle Redirect", slog.String("method", string(method)), slog.String("url", url))
 }
 
