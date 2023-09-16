@@ -4,12 +4,21 @@
 package main
 
 import (
-	"io/fs"
+	"html/template"
+	"net/http"
 	"os"
 
 	"github.com/relvox/iridescence_go/handlers"
+	"github.com/relvox/iridescence_go/templates/funcs"
 )
 
-var staticFileServer = handlers.StaticFileServer("./static/")
+var staticFileHandler = http.FileServer(http.FS(
+	os.DirFS("./embeds/static/"),
+))
 
-var getTemplatesFS = func() fs.FS { return os.DirFS("./templates/") }
+var templateFS = os.DirFS("./embeds/templates/")
+
+var templateHandler = handlers.
+	NewFSTemplateHandler(templateFS).
+	WithFuncs(template.FuncMap{"contains": funcs.SliceContains}).
+	WithDebug()

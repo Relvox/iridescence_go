@@ -5,17 +5,23 @@ package main
 
 import (
 	"embed"
-	"io/fs"
+	"html/template"
+	"net/http"
 
 	"github.com/relvox/iridescence_go/files"
 	"github.com/relvox/iridescence_go/handlers"
+	"github.com/relvox/iridescence_go/templates/funcs"
 )
 
-//go:embed static/* templates/*
+//go:embed embeds/static/* embeds/templates/*
 var staticFS embed.FS
 
-var staticFileServer = handlers.FSFileServer{
-	FS: files.NewSubdirectoryFS(staticFS, "static"),
-}
+var staticFileHandler = http.FileServer(http.FS(
+	files.NewSubdirectoryFS(staticFS, "embeds/static"),
+))
 
-var getTemplatesFS = func() fs.FS { return files.NewSubdirectoryFS(staticFS, "templates") }
+var templateFS = files.NewSubdirectoryFS(staticFS, "embeds/templates")
+
+var templateHandler = handlers.
+	NewFSTemplateHandler(templateFS).
+	WithFuncs(template.FuncMap{"contains": funcs.SliceContains})

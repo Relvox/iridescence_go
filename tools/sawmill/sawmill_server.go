@@ -8,7 +8,6 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
-	"reflect"
 	"regexp"
 	"slices"
 	"strings"
@@ -18,6 +17,7 @@ import (
 	"github.com/relvox/iridescence_go/logging"
 	"github.com/relvox/iridescence_go/servers"
 	"github.com/relvox/iridescence_go/templates"
+	"github.com/relvox/iridescence_go/templates/funcs"
 	"github.com/relvox/iridescence_go/utils"
 )
 
@@ -140,32 +140,7 @@ func (s *SawmillServer) ExecuteQuery(query string) error {
 
 func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
 	funcMap := template.FuncMap{
-		"contains": func(s reflect.Value, k reflect.Value) bool {
-			for i := 0; i < s.Len(); i++ {
-				if s.Index(i).Interface() == k.Interface() {
-					return true
-				}
-			}
-			return false
-		},
-	}
-
-	rootTmpl := template.New("root").Funcs(funcMap)
-	rootTmpl, err := rootTmpl.ParseFS(s.GetTmplFS(), "*")
-	if err != nil {
-		panic(err)
-	}
-	tmpls := rootTmpl.Templates()
-	for _, t := range tmpls {
-		s.Log.Info("loaded template", slog.String("name", t.Name()))
-
-		servers.RouterHandleTemplate[*SawmillServer](
-			r, s.Log, servers.GET,
-			"/"+files.IsolateName(t.Name()), t,
-			func() (*SawmillServer, error) {
-				return s, nil
-			},
-		)
+		"contains": funcs.SliceContains,
 	}
 
 	type files_form struct {
@@ -174,12 +149,12 @@ func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
 	servers.RouterHandleTemplatesRequest[map[string]any, files_form](
 		r, s.Log,
 		servers.POST, "/select",
-		templates.LiveLookup(funcMap, s.GetTmplFS, "log_file_selector.html", "result_table.html"),
+		templates.LiveLookup(funcMap, s.GetTmplFS, "log_file_selector.gohtml", "result_table.gohtml"),
 		func(form files_form) (map[string]any, error) {
 			s.UpdateSelection(form.Files)
 			return map[string]any{
-				"log_file_selector.html": s,
-				"result_table.html":      s,
+				"log_file_selector.gohtml": s,
+				"result_table.gohtml":      s,
 			}, nil
 		},
 	)
@@ -190,7 +165,7 @@ func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
 
 	servers.RouterHandleTemplateRequest[*SawmillServer](
 		r, s.Log,
-		servers.POST, "/query", templates.LiveLookup(funcMap, s.GetTmplFS, "result_table.html")[0],
+		servers.POST, "/query", templates.LiveLookup(funcMap, s.GetTmplFS, "result_table.gohtml")[0],
 		func(form query_form) (*SawmillServer, error) {
 			s.ExecuteQuery(form.Query)
 			return s, nil

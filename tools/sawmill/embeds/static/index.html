@@ -13,7 +13,7 @@
 <body>
     <div id="collapsible-panel">
         <div>Files:</div>
-        <div id="log_file_selector" hx-trigger="load" hx-get="/log_file_selector"></div>
+        <div id="log_file_selector" hx-trigger="load" hx-get="/tmpl/log_file_selector"></div>
     </div>
 
     <div id="main-content">
@@ -28,9 +28,9 @@
             </form>
         </div>
         <div style="clear: both;">
-            <div hx-get="/query_field" hx-trigger="load" hx-target="#query"></div>
+            <div hx-get="/tmpl/query_field" hx-trigger="load" hx-target="#query"></div>
         </div>
-        <div id="results" hx-get="/result_table" hx-trigger="load" hx-swap="outerHTML" style=" overflow-x: none;">
+        <div id="results" hx-get="/tmpl/result_table" hx-trigger="load" hx-swap="outerHTML" style=" overflow-x: none;">
             <!-- Results will be displayed here -->
         </div>
     </div>

@@ -1,16 +1,16 @@
-package templates_test
+package funcs_test
 
 import (
 	"bytes"
 	"html/template"
 	"testing"
 
-	"github.com/relvox/iridescence_go/templates"
+	"github.com/relvox/iridescence_go/templates/funcs"
 )
 
 func TestDict(t *testing.T) {
 	tmpl, err := template.New("test").Funcs(template.FuncMap{
-		"dict": templates.DictFunc,
+		"dict": funcs.DictFunc,
 	}).Parse(`{{ with dict "name" "John" "age" 30 "city" "New York" }}Name: {{ .name }}, Age: {{ .age }}, City: {{ .city }}{{ else }}{{ . }}{{ end }}`)
 	if err != nil {
 		t.Fatalf("Failed to parse template: %v", err)
@@ -30,7 +30,7 @@ func TestDict(t *testing.T) {
 
 func TestDictOddArgs(t *testing.T) {
 	tmpl, err := template.New("test").Funcs(template.FuncMap{
-		"dict": templates.DictFunc,
+		"dict": funcs.DictFunc,
 	}).Parse(`{{ dict "name" "John" "age" }}`)
 	if err != nil {
 		t.Fatalf("Failed to parse template: %v", err)
@@ -45,7 +45,7 @@ func TestDictOddArgs(t *testing.T) {
 
 func TestDictNonStringKey(t *testing.T) {
 	tmpl, err := template.New("test").Funcs(template.FuncMap{
-		"dict": templates.DictFunc,
+		"dict": funcs.DictFunc,
 	}).Parse(`{{ dict 123 "John" }}`)
 	if err != nil {
 		t.Fatalf("Failed to parse template: %v", err)
@@ -92,7 +92,7 @@ func TestContainsKeyFunc(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tmpl, err := template.New("test").Funcs(template.FuncMap{
-				"containsKey": templates.ContainsKeyFunc,
+				"containsKey": funcs.ContainsKeyFunc,
 			}).Parse(tt.tmplStr)
 			if err != nil {
 				t.Fatalf("Failed to parse template: %v", err)

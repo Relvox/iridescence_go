@@ -5,6 +5,9 @@ import (
 	"html/template"
 )
 
+// ApplyTemplateFuncGen blah blah
+//
+// Deprecated: foo
 func ApplyTemplateFuncGen(t *template.Template) func(string, interface{}) (template.HTML, error) {
 	return func(templateName string, data interface{}) (template.HTML, error) {
 		var buf bytes.Buffer

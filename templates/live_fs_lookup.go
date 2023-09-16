@@ -7,6 +7,9 @@ import (
 	"golang.org/x/exp/slices"
 )
 
+// LiveLookup bla bla
+//
+// Deprecated: foo
 func LiveLookup(funcMap template.FuncMap, getFS func() fs.FS, files ...string) []*template.Template {
 	root := template.New("root").Funcs(funcMap)
 	root = template.Must(root.ParseFS(getFS(), "*"))

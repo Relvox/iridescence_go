@@ -1,4 +1,4 @@
-package templates
+package funcs
 
 import (
 	"fmt"
@@ -32,7 +32,6 @@ func canBeNil(typ reflect.Type) bool {
 	}
 	return false
 }
-
 
 // indirect returns the item at the end of indirection, and a bool to indicate
 // if it's nil. If the returned bool is true, the returned value's kind will be

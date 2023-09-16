@@ -6,4 +6,4 @@ nop:
 
 .PHONY: count
 count: 
-	countula -gitignore -extensions "go,html,css,js,json,yaml,md" > lines
+	countula -gitignore -extensions "go,html,css,js,json,yaml,md,gohtml" > lines

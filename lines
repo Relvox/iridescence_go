@@ -1,9 +1,10 @@
 Count by extension:
-  go: 2831
-  html: 83
+  go: 2876
+  html: 34
   css: 157
   js: 3
   json: 6
   yaml: 0
   md: 49
-TOTAL: 3129
+  gohtml: 49
+TOTAL: 3174
