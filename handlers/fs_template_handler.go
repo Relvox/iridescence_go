@@ -74,21 +74,31 @@ func (s FSTemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	requestPath := r.URL.Path
-	tmplName := strings.TrimLeft(requestPath, "/") + ".gohtml"
-	model := s.GetModel(requestPath)
-	if model == nil {
-		s.Log.Error("missing model for template", slog.String("template", tmplName))
+	var requestPaths []string
+	if strings.Contains(requestPath, "|") {
+		requestPaths = strings.Split(requestPath, "|")
+	} else {
+		requestPaths = []string{requestPath}
 	}
 
-	tmpl := s.Root.Lookup(tmplName)
-	if tmpl == nil {
-		s.Log.Error("Failed to lookup template", slog.String("template", tmplName))
-		return
-	}
+	for _, requestPath := range requestPaths {
+		model := s.GetModel(requestPath)
+		tmplName := strings.TrimLeft(requestPath, "/") + ".gohtml"
+		if model == nil {
+			s.Log.Error("missing model for template", slog.String("template", tmplName))
+			continue
+		}
 
-	err := tmpl.Execute(w, model)
-	if err != nil {
-		s.Log.Error("Failed to execute template", slog.String("template", tmplName), logging.Error(err))
-		return
+		tmpl := s.Root.Lookup(tmplName)
+		if tmpl == nil {
+			s.Log.Error("Failed to lookup template", slog.String("template", tmplName))
+			continue
+		}
+
+		err := tmpl.Execute(w, model)
+		if err != nil {
+			s.Log.Error("Failed to execute template", slog.String("template", tmplName), logging.Error(err))
+			continue
+		}
 	}
 }

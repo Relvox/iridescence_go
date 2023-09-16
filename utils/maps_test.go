@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	assutil "github.com/relvox/iridescence_go/assert"
-	"github.com/relvox/iridescence_go/prototyping"
+	"github.com/relvox/iridescence_go/experimental/prototyping"
 	"github.com/relvox/iridescence_go/sets"
 	"github.com/relvox/iridescence_go/utils"
 )

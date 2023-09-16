@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	asserts "github.com/relvox/iridescence_go/assert"
-	"github.com/relvox/iridescence_go/prolog"
+	"github.com/relvox/iridescence_go/experimental/prolog"
 )
 
 func Test_Append(t *testing.T) {
