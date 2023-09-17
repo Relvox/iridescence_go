@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"html"
+	"html/template"
 	"io/fs"
 	"log/slog"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -12,15 +14,19 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
+
 	"github.com/relvox/iridescence_go/files"
 	"github.com/relvox/iridescence_go/logging"
 	"github.com/relvox/iridescence_go/servers"
+	"github.com/relvox/iridescence_go/templates/funcs"
 	"github.com/relvox/iridescence_go/utils"
 )
 
 type SawmillServer struct {
-	GetTmplFS func() fs.FS
-	Trackers  map[string]*files.FileTracker
+	TmplFS   fs.FS
+	StaticFS fs.FS
+
+	Trackers map[string]*files.FileTracker
 
 	Paths         []string
 	SelectedFiles []string
@@ -30,20 +36,24 @@ type SawmillServer struct {
 	Log *slog.Logger
 }
 
-func NewSawmillServer(logPath string, getTmplFS func() fs.FS, log *slog.Logger) *SawmillServer {
+func NewSawmillServer(logPath string, tmplFS, staticFS fs.FS, log *slog.Logger) *SawmillServer {
 	logFiles, err := files.ListFS(os.DirFS(filepath.Dir(logPath)), ".", "*.log")
 	if err != nil {
 		log.Error("failed to get template filenames", logging.Error(err))
 	}
 	slices.Reverse(logFiles)
 	return &SawmillServer{
+		TmplFS:   tmplFS,
+		StaticFS: staticFS,
+
+		Trackers: map[string]*files.FileTracker{},
+
 		Paths:         logFiles,
-		GetTmplFS:     getTmplFS,
 		SelectedFiles: make([]string, 0),
 		Query:         "",
-		Trackers:      map[string]*files.FileTracker{},
 		CurrentLines:  []string{},
-		Log:           log,
+
+		Log: log,
 	}
 }
 
@@ -129,7 +139,7 @@ func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
 		Files []string `schema:"files"`
 	}
 	servers.RouterHandleRedirectRequest[files_form](r, s.Log, servers.POST,
-		"/select", func(form files_form) (string, error) {
+		"/sawmill/select", func(form files_form) (string, error) {
 			err := s.UpdateSelection(form.Files)
 			if err != nil {
 				return "", err
@@ -137,7 +147,7 @@ func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
 			if len(s.Query) > 0 {
 				err = s.ExecuteQuery(s.Query)
 			}
-			return "/tmpl/log_file_selector|result_table", err
+			return "/sawmill/tmpl/log_file_selector|result_table", err
 		},
 	)
 
@@ -145,9 +155,19 @@ func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
 		Query string `schema:"query"`
 	}
 	servers.RouterHandleRedirectRequest[query_form](r, s.Log, servers.POST,
-		"/query", func(form query_form) (string, error) {
-			return "/tmpl/result_table", s.ExecuteQuery(form.Query)
+		"/sawmill/query", func(form query_form) (string, error) {
+			return "/sawmill/tmpl/result_table", s.ExecuteQuery(form.Query)
 		},
+	)
+
+	r.PathPrefix("/sawmill/tmpl").Handler(http.StripPrefix("/sawmill/tmpl",
+		templateHandler.WithModelGetter(
+			func(template string) any { return s },
+		).WithFuncs(template.FuncMap{"contains": funcs.SliceContains}).Parse(),
+	))
+
+	r.PathPrefix("/sawmill").Handler(http.StripPrefix("/sawmill",
+		http.FileServer(http.FS(s.StaticFS))),
 	)
 }
 

@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/fs"
 	"log/slog"
 	"net/http"
 
@@ -32,17 +31,11 @@ func main() {
 	)
 	mwLogging := middleware.LoggingMiddleware(log, middleware.AllOptions-middleware.UserAgent-middleware.Response-middleware.RequestID)
 
-	sawmillServ := NewSawmillServer(*dirFlag, func() fs.FS { return templateFS }, log)
+	sawmillServ := NewSawmillServer(*dirFlag, templateFS, staticFSDir, log)
 	log.Debug("registering server routes", slog.String("server", fmt.Sprintf("%T", sawmillServ)))
 
 	router := mux.NewRouter()
 	sawmillServ.RegisterRoutes(router)
-	router.PathPrefix("/tmpl").Handler(http.StripPrefix("/tmpl",
-		templateHandler.Parse().WithModelGetter(
-			func(template string) any { return sawmillServ },
-		),
-	))
-	router.PathPrefix("/").Handler(staticFileHandler)
 
 	log.Info("Started Listening", slog.String("address", *addrFlag))
 	router.Use(mwLogging)
