@@ -27,7 +27,7 @@ type SawmillServer struct {
 	StaticFS fs.FS
 	LogsFS   fs.FS
 
-	Trackers map[string]*files.FileTracker
+	Trackers map[string]*FSLineTracker
 
 	SelectedFiles []string
 	Query         string
@@ -42,7 +42,7 @@ func NewSawmillServer(logPath string, tmplFS, staticFS fs.FS, log *slog.Logger) 
 		StaticFS: staticFS,
 		LogsFS:   os.DirFS(filepath.Dir(logPath)),
 
-		Trackers: map[string]*files.FileTracker{},
+		Trackers: make(map[string]*FSLineTracker),
 
 		SelectedFiles: make([]string, 0),
 		Query:         "",
@@ -58,16 +58,14 @@ func (s *SawmillServer) UpdateSelection(selected []string) error {
 	for _, file := range selected {
 		tracker, ok := s.Trackers[file]
 		if !ok {
-			s.Trackers[file] = files.NewFileTracker(file)
+			s.Trackers[file] = NewFSLineTracker(s.LogsFS, file)
 			tracker = s.Trackers[file]
 		} else {
 			if err := tracker.Refresh(); err != nil {
 				return err
 			}
 		}
-		lines := strings.Split(string(tracker.GetContent()), "\n")
-		slices.Reverse(lines)
-		s.CurrentLines = append(s.CurrentLines, lines...)
+		s.CurrentLines = append(s.CurrentLines, tracker.Content...)
 	}
 	return nil
 }
@@ -118,9 +116,7 @@ func (s *SawmillServer) ExecuteQuery(query string) error {
 		}
 		tracker := s.Trackers[file]
 		tracker.Refresh()
-		lines := strings.Split(string(tracker.GetContent()), "\n")
-		slices.Reverse(lines)
-		for _, line := range lines {
+		for _, line := range tracker.Content {
 			if searchFunc(line, query) {
 				s.CurrentLines = append(s.CurrentLines, line)
 			}
