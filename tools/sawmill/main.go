@@ -11,6 +11,7 @@ import (
 
 	"github.com/relvox/iridescence_go/logging"
 	"github.com/relvox/iridescence_go/middleware"
+	"github.com/relvox/iridescence_go/servers/sawmill"
 )
 
 func main() {
@@ -31,7 +32,7 @@ func main() {
 	)
 	mwLogging := middleware.LoggingMiddleware(log, middleware.AllOptions-middleware.UserAgent-middleware.Response-middleware.RequestID)
 
-	sawmillServ := NewSawmillServer(*dirFlag, templateFS, staticFSDir, log)
+	sawmillServ := sawmill.NewSawmillServer(*dirFlag, sawmill.SawmillTemplateFS, sawmill.SawmillStaticFSDir, log)
 	log.Debug("registering server routes", slog.String("server", fmt.Sprintf("%T", sawmillServ)))
 
 	router := mux.NewRouter()

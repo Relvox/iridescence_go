@@ -1,4 +1,4 @@
-package main
+package sawmill
 
 import (
 	"encoding/json"
@@ -25,10 +25,10 @@ import (
 type SawmillServer struct {
 	TmplFS   fs.FS
 	StaticFS fs.FS
+	LogsFS   fs.FS
 
 	Trackers map[string]*files.FileTracker
 
-	Paths         []string
 	SelectedFiles []string
 	Query         string
 	CurrentLines  []string
@@ -37,18 +37,13 @@ type SawmillServer struct {
 }
 
 func NewSawmillServer(logPath string, tmplFS, staticFS fs.FS, log *slog.Logger) *SawmillServer {
-	logFiles, err := files.ListFS(os.DirFS(filepath.Dir(logPath)), ".", "*.log")
-	if err != nil {
-		log.Error("failed to get template filenames", logging.Error(err))
-	}
-	slices.Reverse(logFiles)
 	return &SawmillServer{
 		TmplFS:   tmplFS,
 		StaticFS: staticFS,
+		LogsFS:   os.DirFS(filepath.Dir(logPath)),
 
 		Trackers: map[string]*files.FileTracker{},
 
-		Paths:         logFiles,
 		SelectedFiles: make([]string, 0),
 		Query:         "",
 		CurrentLines:  []string{},
@@ -161,7 +156,7 @@ func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
 	)
 
 	r.PathPrefix("/sawmill/tmpl").Handler(http.StripPrefix("/sawmill/tmpl",
-		templateHandler.WithModelGetter(
+		SawmillTemplateHandler.WithModelGetter(
 			func(template string) any { return s },
 		).WithFuncs(template.FuncMap{"contains": funcs.SliceContains}).Parse(),
 	))
@@ -169,6 +164,15 @@ func (s *SawmillServer) RegisterRoutes(r *mux.Router) {
 	r.PathPrefix("/sawmill").Handler(http.StripPrefix("/sawmill",
 		http.FileServer(http.FS(s.StaticFS))),
 	)
+}
+
+func (s *SawmillServer) Paths() []string {
+	logFiles, err := files.ListFS(s.LogsFS, ".", "*.log")
+	if err != nil {
+		s.Log.Error("failed to get template filenames", logging.Error(err))
+	}
+	slices.Reverse(logFiles)
+	return logFiles
 }
 
 func (s *SawmillServer) Events() []LogLine {

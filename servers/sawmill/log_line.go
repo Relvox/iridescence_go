@@ -1,4 +1,4 @@
-package main
+package sawmill
 
 type LogLine struct {
 	Time    string
