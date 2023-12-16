@@ -59,3 +59,10 @@ func StructToMap[T any](t T) (map[string]any, error) {
 
 	return out, nil
 }
+
+func TakeOne[TM ~map[TK]TV, TK comparable, TV any](dict TM) (TK, TV) {
+	for k, v := range dict {
+		return k, v
+	}
+	panic("empty map")
+}

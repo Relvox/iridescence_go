@@ -11,6 +11,13 @@ type Number interface {
 	constraints.Integer | constraints.Float
 }
 
+func Sign[N Number](n N) N {
+	if n == 0 {
+		return n
+	}
+	return n / Abs(n)
+}
+
 func Abs[N Number](i N) N {
 	if i >= 0 {
 		return i

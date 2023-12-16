@@ -2,8 +2,9 @@ package sets
 
 import (
 	"fmt"
-	"maps"
 	"strings"
+
+	"golang.org/x/exp/maps"
 )
 
 // Unit is an empty struct
@@ -85,6 +86,25 @@ func (s Set[T]) Difference(elements ...T) Set[T] {
 		delete(result, k)
 	}
 	return result
+}
+
+func (s Set[T]) ThreeWay(other Set[T]) [3]Set[T] {
+	blr := [3]Set[T]{NewSet[T](), NewSet[T](), NewSet[T]()}
+	for k := range s {
+		if other.Contains(k) {
+			blr[0].Add(k)
+		} else {
+			blr[1].Add(k)
+		}
+	}
+
+	for ok := range other {
+		if s.Contains(ok) {
+			continue
+		}
+		blr[2].Add(ok)
+	}
+	return blr
 }
 
 func (s Set[T]) Contains(element T) bool {
