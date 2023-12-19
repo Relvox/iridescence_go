@@ -78,3 +78,11 @@ func Last[E ~[]T, T any](list E) (T, bool) {
 	}
 	return list[len(list)-1], true
 }
+
+func Reversed[E ~[]T, T any](list E) []T {
+	res := make([]T, len(list))
+	for i := 0; i < len(res); i++ {
+		res[i] = list[len(res)-1-i]
+	}
+	return res
+}
