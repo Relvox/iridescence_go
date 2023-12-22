@@ -26,8 +26,10 @@ func NewSet[T comparable](elements ...T) Set[T] {
 }
 
 // Add an element to the set
-func (s Set[T]) Add(elem T) {
-	s[elem] = U
+func (s Set[T]) Add(elems ...T) {
+	for _, elem := range elems {
+		s[elem] = U
+	}
 }
 
 func (s Set[T]) SetUnion(other Set[T]) Set[T] {

@@ -61,6 +61,18 @@ func Crop[T any](slice []T, index int) []T {
 	return append(left, right...)
 }
 
+func CropElement[T comparable, E ~[]T](slice E, element T) []T {
+	result := make(E, 0, len(slice))
+
+	for i, j := 0, 0; i < len(slice); i++ {
+		if slice[i] != element {
+			result[j] = element
+			j++
+		}
+	}
+	return result
+}
+
 func FindPred[E ~[]T, T any](list E, pred func(T) bool) (T, bool) {
 	for i := range list {
 		if pred(list[i]) {

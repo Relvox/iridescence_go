@@ -41,13 +41,27 @@ func (g *SGrid[TCell, TEdge]) GetCell(x, y int) TCell {
 	return g.Cells[x][y]
 }
 
-func (g *SGrid[TCell, TEdge]) GetNeighbors(x, y int) [4]TCell {
-	pt := Point2{x, y}
-	return [4]TCell{
-		g.GetCell(pt.Offset(N).XY()),
-		g.GetCell(pt.Offset(E).XY()),
-		g.GetCell(pt.Offset(S).XY()),
-		g.GetCell(pt.Offset(W).XY()),
+func (g *SGrid[TCell, TEdge]) GetCellPt(pt Point2) TCell {
+	return g.GetCell(pt.XY())
+}
+
+func (g *SGrid[TCell, TEdge]) GetNeighbors(x, y int) []TCell {
+
+	return []TCell{
+		g.GetCellPt(N.Offset(x, y)),
+		g.GetCellPt(E.Offset(x, y)),
+		g.GetCellPt(S.Offset(x, y)),
+		g.GetCellPt(W.Offset(x, y)),
+	}
+}
+
+func (g *SGrid[TCell, TEdge]) GetNeighborsMap(x, y int) map[Point2]TCell {
+
+	return map[Point2]TCell{
+		N.Offset(x, y): g.GetCellPt(N.Offset(x, y)),
+		E.Offset(x, y): g.GetCellPt(E.Offset(x, y)),
+		S.Offset(x, y): g.GetCellPt(S.Offset(x, y)),
+		W.Offset(x, y): g.GetCellPt(W.Offset(x, y)),
 	}
 }
 
@@ -61,7 +75,10 @@ func (g *SGrid[TCell, TEdge]) SetEdges(x, y int, n, e, s, w TEdge) {
 func (g *SGrid[TCell, TEdge]) GetEdges(x, y int) (TEdge, TEdge, TEdge, TEdge) {
 	return g.Edges[x][y+1][1], g.Edges[x+1][y][0], g.Edges[x][y][1], g.Edges[x][y][0]
 }
+func (g *SGrid[TCell, TEdge]) GetEdgesPt(pt Point2) (TEdge, TEdge, TEdge, TEdge) {
+	return g.GetEdges(pt.XY())
+}
 
 func (g *SGrid[TCell, TEdge]) Swap(x1, y1, x2, y2 int) {
-	g.Cells[x1][y1], g.Cells[x2][y2] = g.GetCell(x2, y2), g.GetCell(x1, y1)
+	g.Cells[x1][y1], g.Cells[x2][y2] = g.Cells[x2][y2], g.Cells[x1][y1]
 }
