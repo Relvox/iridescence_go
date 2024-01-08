@@ -33,6 +33,20 @@ func SortedKeys[K constraints.Ordered, V any](self map[K]V) []K {
 	return result
 }
 
+// SortKeys gets a slice of all the keys in a map, sorted by a predicate func
+func SortKeys[K comparable, V any, U ~map[K]V](self U, pred func(a, b K) bool) []K {
+	var result []K = make([]K, len(self))
+	id := 0
+	for k := range self {
+		result[id] = k
+		id++
+	}
+	sort.Slice(result, func(i, j int) bool {
+		return pred(result[i], result[j])
+	})
+	return result
+}
+
 // MapToStruct converts a map to a struct by converting through json
 func MapToStruct[T any](m map[string]any) (T, error) {
 	var result T

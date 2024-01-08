@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	assutil "github.com/relvox/iridescence_go/assert"
+	"github.com/relvox/iridescence_go/asserts"
 	"github.com/relvox/iridescence_go/experimental/prototyping"
 	"github.com/relvox/iridescence_go/sets"
 	"github.com/relvox/iridescence_go/utils"
@@ -186,7 +186,7 @@ func Test_StructToMap(t *testing.T) {
 		assert.Equal(t, "Alice", actual["Name"])
 		assert.True(t, reflect.DeepEqual(map[string]any{"prop1": "value1", "prop2": "value2"}, actual["Properties"]))
 		assert.True(t, reflect.DeepEqual(map[string]any{"stat1": 10.0, "stat2": 20.0}, actual["Stats"]))
-		assutil.SameElements(t, []any{"tag1", "tag2"}, actual["Tags"].([]any))
+		asserts.SameElements(t, []any{"tag1", "tag2"}, actual["Tags"].([]any))
 	})
 	for k := 100; k < 1000001; k *= 10 {
 		t.Run(fmt.Sprintf("big entity %d", k), func(t *testing.T) {
@@ -197,7 +197,7 @@ func Test_StructToMap(t *testing.T) {
 			assert.Equal(t, expected["Name"], actual["Name"])
 			assert.True(t, reflect.DeepEqual(expected["Properties"], actual["Properties"]))
 			assert.True(t, reflect.DeepEqual(expected["Stats"], actual["Stats"]))
-			assutil.SameElements(t, expected["Tags"].([]any), actual["Tags"].([]any))
+			asserts.SameElements(t, expected["Tags"].([]any), actual["Tags"].([]any))
 		})
 	}
 }

@@ -7,35 +7,43 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/relvox/iridescence_go/files"
 	"github.com/relvox/iridescence_go/logging"
 	"github.com/relvox/iridescence_go/middleware"
 )
 
-// var dotSuffixRegex = regexp.MustCompile(`[^\.]\.\s*$`)
-
+// TemplateModelGetter is a function type that takes a template name and returns a model (data) for that template.
 type TemplateModelGetter func(template string) any
 
+// FSTemplateHandler is a struct that handles template rendering from a file system.
 type FSTemplateHandler struct {
-	fs.FS
-	FuncMap   template.FuncMap
-	GetModel  TemplateModelGetter
-	Root      *template.Template
-	DebugMode bool
-	Log       *slog.Logger
+	fs.FS                         // Embedding file system interface to access templates.
+	Patterns  []string            // Selecting templates within the FS.
+	FuncMap   template.FuncMap    // Custom template functions.
+	GetModel  TemplateModelGetter // Function to get the model for a given template.
+	Root      *template.Template  // Root template object.
+	DebugMode bool                // Flag to indicate debug mode.
+	Log       *slog.Logger        // Logger instance.
+
+	templateExtensions map[string]string // an internal cache of extensions to match file for requests.
 }
 
-func NewFSTemplateHandler(fs fs.FS) FSTemplateHandler {
+// NewFSTemplateHandler creates a new instance of FSTemplateHandler with the provided file system and file patterns.
+func NewFSTemplateHandler(fs fs.FS, patterns ...string) FSTemplateHandler {
 	return FSTemplateHandler{
-		FS:   fs,
-		Root: template.New("root"),
+		FS:       fs,
+		Patterns: patterns,
+		Root:     template.New("root"),
 	}
 }
 
+// WithModelGetter sets the function to retrieve models for templates.
 func (s FSTemplateHandler) WithModelGetter(getter TemplateModelGetter) FSTemplateHandler {
 	s.GetModel = getter
 	return s
 }
 
+// WithModelMap sets a map of models for templates.
 func (s FSTemplateHandler) WithModelMap(modelMap map[string]any) FSTemplateHandler {
 	s.GetModel = func(template string) any {
 		return modelMap[template]
@@ -43,39 +51,57 @@ func (s FSTemplateHandler) WithModelMap(modelMap map[string]any) FSTemplateHandl
 	return s
 }
 
+// WithFuncs sets custom functions to be used in templates.
 func (s FSTemplateHandler) WithFuncs(funcs template.FuncMap) FSTemplateHandler {
 	s.FuncMap = funcs
 	s.Root.Funcs(s.FuncMap)
 	return s
 }
 
+// WithLog sets the logger for the handler.
 func (s FSTemplateHandler) WithLog(log *slog.Logger) FSTemplateHandler {
 	s.Log = log
 	return s
 }
 
+// WithDebug enables debug mode.
 func (s FSTemplateHandler) WithDebug() FSTemplateHandler {
 	s.DebugMode = true
 	return s
 }
 
+// Parse parses the templates from the file system.
 func (s FSTemplateHandler) Parse() FSTemplateHandler {
-	s.Root = template.Must(s.Root.ParseFS(s.FS, "*.gohtml"))
+	s.Root = template.Must(s.Root.ParseFS(s.FS, s.Patterns...))
+	for _, pat := range s.Patterns {
+		patFiles, err := files.ListFS(s.FS, ".", pat)
+		if err != nil {
+			s.Log.Error("error listing files", slog.String("pattern", pat), logging.Error(err))
+			continue
+		}
+		for _, file := range patFiles {
+			_, name, ext := files.Split(file)
+			s.templateExtensions[name] = ext
+		}
+	}
 	return s
 }
 
+// ServeHTTP handles HTTP requests and renders templates.
 func (s FSTemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	contextLog := r.Context().Value(middleware.Key("log"))
 	if contextLog != nil {
 		s.Log = contextLog.(*slog.Logger)
 	}
 	if s.DebugMode {
-		s.Root = template.Must(template.New("root").Funcs(s.FuncMap).ParseFS(s.FS, "*.gohtml"))
+		// Re-parse templates in debug mode for each request.
+		s.Root = template.Must(template.New("root").Funcs(s.FuncMap).ParseFS(s.FS, s.Patterns...))
 	}
 
 	requestPath := r.URL.Path
 	var requestPaths []string
 	if strings.Contains(requestPath, "|") {
+		// Support for multiple template paths.
 		requestPaths = strings.Split(requestPath, "|")
 	} else {
 		requestPaths = []string{requestPath}
@@ -83,7 +109,8 @@ func (s FSTemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	for _, requestPath := range requestPaths {
 		model := s.GetModel(requestPath)
-		tmplName := strings.TrimLeft(requestPath, "/") + ".gohtml"
+		requestPath = strings.TrimLeft(requestPath, "/")
+		tmplName := requestPath + s.templateExtensions[requestPath]
 		if model == nil {
 			s.Log.Error("missing model for template", slog.String("template", tmplName))
 			continue
@@ -95,6 +122,7 @@ func (s FSTemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
+		// Execute the template with the model.
 		err := tmpl.Execute(w, model)
 		if err != nil {
 			s.Log.Error("Failed to execute template", slog.String("template", tmplName), logging.Error(err))

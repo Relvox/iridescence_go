@@ -14,7 +14,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/relvox/iridescence_go/logging"
-	"github.com/relvox/iridescence_go/utils"
+	"github.com/relvox/iridescence_go/maths"
 )
 
 type LoggingOptions uint16
@@ -52,7 +52,7 @@ func (o LoggingOptions) LogResponseStatus() bool      { return (o & ResponseStat
 func (o LoggingOptions) LogDuration() bool            { return (o & Duration) != 0 }
 
 func LoggingMiddleware(log *slog.Logger, opts ...LoggingOptions) mux.MiddlewareFunc {
-	config := utils.Sum(opts...)
+	config := maths.Sum(opts...)
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()

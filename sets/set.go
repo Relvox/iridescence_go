@@ -8,7 +8,7 @@ import (
 )
 
 // Unit is an empty struct
-type Unit struct{}
+type Unit = struct{}
 
 // U is the unit
 var U = Unit{}

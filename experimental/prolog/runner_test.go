@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	asserts "github.com/relvox/iridescence_go/assert"
+	"github.com/relvox/iridescence_go/asserts"
 	"github.com/relvox/iridescence_go/experimental/prolog"
 )
 

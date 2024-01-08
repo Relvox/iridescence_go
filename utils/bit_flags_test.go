@@ -61,6 +61,11 @@ func TestBitFlagComplexScenario(t *testing.T) {
 		t.Error("Expected FlagC to remain set")
 	}
 
+	bf.ToggleMany(FlagD, FlagE)
+	if bf.Cleared(FlagD) || bf.Cleared(FlagE) {
+		t.Error("Expected FlagD and FlagE to be on after toggling")
+	}
+
 	// Using Get and GetMany
 	combined := bf.Get(FlagD)
 	combinedMany := bf.GetMany(FlagD, FlagE)
@@ -190,18 +195,18 @@ func TestBitFlagSetMany(t *testing.T) {
 }
 
 func TestBitFlagGet(t *testing.T) {
-	var bf utils.BitFlag = Flag1
+	var bf utils.BitFlag = Flag1 | Flag2
 	result := bf.Get(Flag2)
-	if !result.Test(Flag1) || !result.Test(Flag2) {
-		t.Errorf("Expected Flag1 and Flag2 to be present in the result")
+	if !result.Cleared(Flag1) || !result.Test(Flag2) {
+		t.Errorf("Expected Flag2 -but not Flag1 - to be present in the result")
 	}
 }
 
 func TestBitFlagGetMany(t *testing.T) {
-	var bf utils.BitFlag = Flag1
+	var bf utils.BitFlag = Flag1 | Flag2 | Flag4 | Flag128
 	result := bf.GetMany(Flag2, Flag4)
-	if !result.TestAll(Flag1, Flag2, Flag4) {
-		t.Errorf("Expected Flag1, Flag2, and Flag4 to be present in the result")
+	if !result.TestAll(Flag2, Flag4) {
+		t.Errorf("Expected Flag2, and Flag4 to be present in the result")
 	}
 }
 

@@ -10,29 +10,29 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-type AbstractGraph[Node comparable, Edge any] map[Node]map[Node]Edge
+type AdjGraph[Node comparable, Edge any] map[Node]map[Node]Edge
 
-func NewAbstractGraph[Node comparable, Edge any]() AbstractGraph[Node, Edge] {
-	return make(AbstractGraph[Node, Edge])
+func NewAdjGraph[Node comparable, Edge any]() AdjGraph[Node, Edge] {
+	return make(AdjGraph[Node, Edge])
 }
 
-func (g AbstractGraph[Node, Edge]) AddEdge(a, b Node, edge Edge) {
+func (g AdjGraph[Node, Edge]) AddEdge(a, b Node, edge Edge) {
 	if _, ok := g[a]; !ok {
 		g[a] = make(map[Node]Edge)
 	}
 	g[a][b] = edge
 }
 
-func (g AbstractGraph[Node, Edge]) AddBothEdges(a, b Node, edge Edge) {
+func (g AdjGraph[Node, Edge]) AddBothEdges(a, b Node, edge Edge) {
 	g.AddEdge(a, b, edge)
 	g.AddEdge(b, a, edge)
 }
 
-func (g AbstractGraph[Node, Edge]) AllNodes() []Node {
+func (g AdjGraph[Node, Edge]) AllNodes() []Node {
 	return maps.Keys(g)
 }
 
-func (g AbstractGraph[Node, Edge]) EdgesNeighbors(a Node) ([]Edge, []Node) {
+func (g AdjGraph[Node, Edge]) EdgesNeighbors(a Node) ([]Edge, []Node) {
 	var resultEs []Edge
 	var resultNs []Node
 	for n, e := range g[a] {
@@ -42,16 +42,16 @@ func (g AbstractGraph[Node, Edge]) EdgesNeighbors(a Node) ([]Edge, []Node) {
 	return resultEs, resultNs
 }
 
-func FromDGDot[Node comparable, Edge any](path string, convert func(string) Node) (AbstractGraph[Node, Edge], error) {
+func FromDotDigraph[Node comparable, Edge any](path string, convert func(string) Node) (AdjGraph[Node, Edge], error) {
 	return FromDot[Node, Edge](path, "->", convert)
 }
 
-func FromUDGDot[Node comparable, Edge any](path string, convert func(string) Node) (AbstractGraph[Node, Edge], error) {
+func FromDotGraph[Node comparable, Edge any](path string, convert func(string) Node) (AdjGraph[Node, Edge], error) {
 	return FromDot[Node, Edge](path, "--", convert)
 }
 
-func FromDot[Node comparable, Edge any](path, edgeString string, convert func(string) Node) (AbstractGraph[Node, Edge], error) {
-	g := make(AbstractGraph[Node, Edge])
+func FromDot[Node comparable, Edge any](path, edgeString string, convert func(string) Node) (AdjGraph[Node, Edge], error) {
+	g := make(AdjGraph[Node, Edge])
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -84,7 +84,7 @@ func FromDot[Node comparable, Edge any](path, edgeString string, convert func(st
 }
 
 func SaveGraphToJSON[Node comparable, Edge any](
-	graph AbstractGraph[Node, Edge],
+	graph AdjGraph[Node, Edge],
 	filename string,
 ) error {
 	data, err := json.MarshalIndent(graph, "", "    ")
@@ -96,12 +96,12 @@ func SaveGraphToJSON[Node comparable, Edge any](
 
 func LoadGraphFromJSON[Node comparable, Edge any](
 	filename string,
-) (AbstractGraph[Node, Edge], error) {
+) (AdjGraph[Node, Edge], error) {
 	data, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
-	var graph AbstractGraph[Node, Edge]
+	var graph AdjGraph[Node, Edge]
 	err = json.Unmarshal(data, &graph)
 	return graph, err
 }

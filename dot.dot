@@ -1,0 +1,78 @@
+digraph g {
+    "NewMerged" [shape=r]
+
+    "*.IsEmpty" [shape=r]
+    "*.IsEmpty" -> "Null.IsEmpty", "Singleton.IsEmpty", "Closed.IsEmpty", "Merged.IsEmpty" [color="orange"]
+    "*.Contains" [shape=r]
+    "*.Contains" -> "Null.Contains", "Singleton.Contains", "Closed.Contains", "Merged.Contains" [color="orange"]
+    "*.IsSingleton" [shape=r]
+    "*.IsSingleton" -> "Null.IsSingleton", "Singleton.IsSingleton", "Closed.IsSingleton", "Merged.IsSingleton" [color="orange"]
+
+    "^Null.Contains" [shape=r]
+    "^Null.Contains" -> "Singleton.Contains", "Closed.Contains", "Merged.Contains" [color="orange"]
+    "^Null.Intervals" [shape=r]
+    "^Null.Intervals" -> "Singleton.Intervals", "Closed.Intervals", "Merged.Intervals" [color="orange"]
+    "^Null.IsSingleton" [shape=r]
+    "^Null.IsSingleton" -> "Singleton.IsSingleton", "Closed.IsSingleton", "Merged.IsSingleton" [color="orange"]
+    "^Null.Overlaps" [shape=r]
+    "^Null.Overlaps" -> "Singleton.Overlaps", "Closed.Overlaps", "Merged.Overlaps" [color="orange"]
+    "^Singleton.Intervals" [shape=r]
+    "^Null.Intervals" -> "Closed.Intervals", "Merged.Intervals" [color="orange"]
+
+    "vMerged.Contains" [shape=r]
+    "vMerged.Contains" -> "Null.Contains", "Singleton.Contains", "Closed.Contains" [color="lime"]
+    "vMerged.Difference" [shape=r]
+    "vMerged.Difference" -> "Null.Difference", "Singleton.Difference", "Closed.Difference" [color="lime"]
+    "vMerged.Enumerate" [shape=r]
+    "vMerged.Enumerate" -> "Null.Enumerate", "Singleton.Enumerate", "Closed.Enumerate" [color="lime"]
+    "vMerged.Equals" [shape=r]
+    "vMerged.Equals" -> "Null.Equals", "Singleton.Equals", "Closed.Equals" [color="lime"]
+    "vMerged.Intersection" [shape=r]
+    "vMerged.Intersection" -> "Null.Intersection", "Singleton.Intersection", "Closed.Intersection" [color="lime"]
+    "vMerged.Overlaps" [shape=r]
+    "vMerged.Overlaps" -> "Null.Overlaps", "Singleton.Overlaps", "Closed.Overlaps" [color="lime"]
+
+    "Null.IsEmpty" [color=green]
+    "Null.IsSingleton" [color=green]
+    "Null.Enumerate" [color=green]
+    "Null.Intervals" [color=green]
+    "Null.Contains" [color=green]
+    "Null.Overlaps" [color=green]
+    "Null.Equals" -> "*.IsEmpty"
+    "Null.Union" [color=green]
+    "Null.Intersection" [color=green]
+    "Null.Difference" [color=green]
+
+    "Singleton.IsEmpty" [color=green]
+    "Singleton.IsSingleton" [color=green]
+    "Singleton.Enumerate" [color=green]
+    "Singleton.Intervals" [color=green]
+    "Singleton.Contains" [color=green]
+    "Singleton.Overlaps" -> "*.Contains"
+    "Singleton.Equals" -> "Singleton.Contains", "*.IsSingleton"
+    "Singleton.Union" -> "^Null.Contains", "*.IsEmpty", "NewMerged"
+    "Singleton.Intersection" -> "^Null.Contains", "*.IsEmpty"
+    "Singleton.Difference" -> "^Null.Contains", "*.IsEmpty"
+
+    "Closed.IsEmpty" [color=green]
+    "Closed.IsSingleton" [color=green]
+    "Closed.Enumerate" [color=green]
+    "Closed.Intervals" [color=green]
+    "Closed.Contains" [color=green]
+    "Closed.Overlaps" -> "*.IsEmpty", "^Null.IsSingleton", "^Singleton.Intervals", "Merged.Overlaps"
+    "Closed.Equals" -> "*.IsEmpty", "^Null.IsSingleton", "^Singleton.Intervals"
+    "Closed.Union" -> "*.IsEmpty", "^Null.IsSingleton", "^Null.Intervals",  "NewMerged"
+    "Closed.Intersection" -> "*.IsEmpty", "^Null.IsSingleton", "^Singleton.Intervals", "Merged.Intersection"
+    "Closed.Difference" -> "*.IsEmpty", "^Null.Overlaps", "^Null.IsSingleton", "^Singleton.Intervals", "Closed.Contains", "Closed.Difference", "NewMerged"
+
+    "Merged.IsEmpty" [color=green]
+    "Merged.IsSingleton" [color=green]
+    "Merged.Enumerate" -> "vMerged.Enumerate"
+    "Merged.Intervals" [color=green]
+    "Merged.Contains" -> "vMerged.Contains"
+    "Merged.Overlaps" -> "vMerged.Overlaps"
+    "Merged.Equals" -> "*.IsEmpty", "^Null.IsSingleton", "^Singleton.Intervals", "vMerged.Equals"
+    "Merged.Union" -> "NewMerged"
+    "Merged.Intersection" -> "*.IsEmpty", "vMerged.Intersection", "NewMerged"
+    "Merged.Difference" -> "*.IsEmpty", "^Null.Overlaps", "^Null.Intervals", "vMerged.Difference", "NewMerged"
+}
