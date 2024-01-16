@@ -51,6 +51,23 @@ func Min[N Number](vs ...N) N {
 	return min
 }
 
+func Bounds[N Number](vs ...N) (N, N) {
+	if len(vs) == 0 {
+		return 0, 0
+	}
+	min := vs[0]
+	max := vs[0]
+	for i := 1; i < len(vs); i++ {
+		if vs[i] > max {
+			max = vs[i]
+		}
+		if vs[i] < min {
+			min = vs[i]
+		}
+	}
+	return min, max
+}
+
 func Sum[N constraints.Ordered](vs ...N) N {
 	var sum N
 	for _, v := range vs {

@@ -1,6 +1,10 @@
 package intervals
 
-import "sort"
+import (
+	"sort"
+
+	"github.com/relvox/iridescence_go/maths"
+)
 
 func FindCover[T Number](intervals [][2]T) []T {
 	switch {
@@ -48,6 +52,9 @@ func FindCover2[T Number](intervals [][2]T) []T {
 	if len(intervals) == 0 || len(intervals) >= 20_000 {
 		return nil
 	}
+	if len(intervals) == 1 {
+		return intervals[0][:]
+	}
 
 	// Custom insertion sort for potentially better performance in nearly-sorted data
 	for i := 1; i < len(intervals); i++ {
@@ -61,7 +68,7 @@ func FindCover2[T Number](intervals [][2]T) []T {
 	// In-place merge intervals
 	idx := 0
 	for _, interval := range intervals {
-		if interval[0]-1 <= intervals[idx][1] {
+		if maths.MinValue[T]() == interval[0] || interval[0]-1 <= intervals[idx][1] {
 			if interval[1] > intervals[idx][1] {
 				intervals[idx][1] = interval[1]
 			}
@@ -84,7 +91,9 @@ func FindCover3[T Number](intervals [][2]T) []T {
 	if len(intervals) == 0 {
 		return nil
 	}
-
+	if len(intervals) == 1 {
+		return intervals[0][:]
+	}
 	// Sort intervals by their starting point
 	sort.SliceStable(intervals, func(i, j int) bool {
 		return intervals[i][0] < intervals[j][0]
@@ -93,7 +102,7 @@ func FindCover3[T Number](intervals [][2]T) []T {
 	// In-place merge intervals
 	idx := 0
 	for _, interval := range intervals {
-		if interval[0]-1 <= intervals[idx][1] {
+		if maths.MinValue[T]() == interval[0] || interval[0]-1 <= intervals[idx][1] {
 			if interval[1] > intervals[idx][1] {
 				intervals[idx][1] = interval[1]
 			}

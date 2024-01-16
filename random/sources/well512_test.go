@@ -2,12 +2,10 @@ package sources_test
 
 import (
 	"fmt"
-	"log"
 	"math"
 	"math/rand"
 	"testing"
 
-	"github.com/relvox/iridescence_go/asserts/sadistics"
 	"github.com/relvox/iridescence_go/random/sources"
 	"github.com/stretchr/testify/assert"
 )
@@ -88,8 +86,8 @@ func Test_Rands(t *testing.T) {
 				max = v
 			}
 		}
-		chi := sadistics.ChiSquared(buckets, SIZE)
-		log.Println(min, max, chi)
+		// chi := sadistics.ChiSquared(buckets, SIZE)
+		// log.Println(min, max, chi)
 	})
 	t.Run("go_rnd_Uint32", func(t *testing.T) {
 		rng := rand.New(rand.NewSource(-1))
@@ -106,9 +104,8 @@ func Test_Rands(t *testing.T) {
 				max = v
 			}
 		}
-		chi := sadistics.ChiSquared(buckets, SIZE)
-		log.Println(min, max, chi)
-
+		// chi := sadistics.ChiSquared(buckets, SIZE)
+		// log.Println(min, max, chi)
 	})
 	t.Run("go_wrap_Int63", func(t *testing.T) {
 		src := sources.NewGoSource(rand.NewSource(-1))
@@ -125,8 +122,8 @@ func Test_Rands(t *testing.T) {
 				max = v
 			}
 		}
-		chi := sadistics.ChiSquared(buckets, SIZE)
-		log.Println(min, max, chi)
+		// chi := sadistics.ChiSquared(buckets, SIZE)
+		// log.Println(min, max, chi)
 	})
 	t.Run("go_wrap_Uint32", func(t *testing.T) {
 		rng := rand.New(sources.NewGoSource(rand.NewSource(-1)))
@@ -143,8 +140,8 @@ func Test_Rands(t *testing.T) {
 				max = v
 			}
 		}
-		chi := sadistics.ChiSquared(buckets, SIZE)
-		log.Println(min, max, chi)
+		// chi := sadistics.ChiSquared(buckets, SIZE)
+		// log.Println(min, max, chi)
 
 	})
 	t.Run("my_src_Int63", func(t *testing.T) {
@@ -163,8 +160,9 @@ func Test_Rands(t *testing.T) {
 				max = v
 			}
 		}
-		chi := sadistics.ChiSquared(buckets, SIZE)
-		log.Println(min, max, chi)
+
+		// chi := sadistics.ChiSquared(buckets, SIZE)
+		// log.Println(min, max, chi)
 
 	})
 	t.Run("my_src_Uint32", func(t *testing.T) {
@@ -183,8 +181,8 @@ func Test_Rands(t *testing.T) {
 				max = v
 			}
 		}
-		chi := sadistics.ChiSquared(buckets, SIZE)
-		log.Println(min, max, chi)
+		// chi := sadistics.ChiSquared(buckets, SIZE)
+		// log.Println(min, max, chi)
 
 	})
 }

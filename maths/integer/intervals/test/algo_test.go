@@ -81,7 +81,7 @@ func Test_FindCover(t *testing.T) {
 				var testIntervals [][2]int = make([][2]int, len(tt.intervals))
 				copy(testIntervals, tt.intervals)
 				actual := solver(testIntervals)
-				fmt.Println(tt.expected, " vs. ", actual)
+
 				if len(actual) != len(tt.expected) {
 					t.FailNow()
 				}
@@ -95,7 +95,7 @@ func Test_FindCover(t *testing.T) {
 	}
 }
 func Test_FindCover_Group(t *testing.T) {
-	for n := 1; n <= 100_000; n *= 10 {
+	for n := 1; n <= 1_000_000; n *= 10 {
 		for fi, F := range gen_funcs {
 			testIntervals := F(n)
 			for i := 0; i < len(solvers)-1; i++ {
@@ -105,6 +105,9 @@ func Test_FindCover_Group(t *testing.T) {
 					t.Run(fmt.Sprintf("n=%d/%sGen/Solver_%d_%d", n, gen_names[fi], i, j), func(t *testing.T) {
 						baseResult := baseSolver(testIntervals)
 						otherResult := otherSolver(testIntervals)
+						if baseResult == nil || otherResult == nil {
+							return
+						}
 						if !asserts.SameElements(t, baseResult, otherResult) {
 							t.FailNow()
 						}

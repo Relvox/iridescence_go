@@ -13,17 +13,17 @@ var N = 10_000_000
 var (
 	gen_funcs = []func(n int) [][2]int{
 		generateChallengingIntervals,
-		// generateRandomBlobIntervals,
-		// generateAlternatingSizeIntervals,
+		generateRandomBlobIntervals,
+		generateAlternatingSizeIntervals,
 		generateDenseOverlappingIntervals,
-		// generateSparseIntervals,
+		generateSparseIntervals,
 	}
 	gen_names = []string{
 		"Challenging",
-		// "RandomBlob",
-		// "AlternatingSize",
+		"RandomBlob",
+		"AlternatingSize",
 		"DenseOverlapping",
-		// "Sparse",
+		"Sparse",
 	}
 	solvers = []func(ints [][2]int) []int{
 		intervals.FindCover[int],

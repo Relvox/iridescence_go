@@ -1,6 +1,10 @@
 package utils
 
-import "github.com/relvox/iridescence_go/sets"
+import (
+	"slices"
+
+	"github.com/relvox/iridescence_go/sets"
+)
 
 // Same checks if two slices have the same elements in any order
 func Same[T comparable](a, b []T) bool {
@@ -64,10 +68,20 @@ func Crop[T any](slice []T, index int) []T {
 func CropElement[T comparable, E ~[]T](slice E, element T) []T {
 	result := make(E, 0, len(slice))
 
-	for i, j := 0, 0; i < len(slice); i++ {
+	for i := 0; i < len(slice); i++ {
 		if slice[i] != element {
-			result[j] = element
-			j++
+			result = append(result, slice[i])
+		}
+	}
+	return result
+}
+
+func CropElements[T comparable, E ~[]T](slice E, elements ...T) []T {
+	result := make(E, 0, len(slice))
+
+	for i := 0; i < len(slice); i++ {
+		if !slices.Contains(elements, slice[i]) {
+			result = append(result, slice[i])
 		}
 	}
 	return result
