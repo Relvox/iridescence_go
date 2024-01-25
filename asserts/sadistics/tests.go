@@ -12,3 +12,4 @@ func ChiSquared(bucketCounts map[int]int, totalItems int) float64 {
 
 	return chiSquaredSum
 }
+

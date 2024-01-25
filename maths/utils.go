@@ -68,6 +68,16 @@ func Bounds[N Number](vs ...N) (N, N) {
 	return min, max
 }
 
+func Clamp[N Number](min, val, max N) N {
+	switch {
+	case val < min:
+		val = min
+	case val > max:
+		val = max
+	}
+	return val
+}
+
 func Sum[N constraints.Ordered](vs ...N) N {
 	var sum N
 	for _, v := range vs {

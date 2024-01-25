@@ -5,70 +5,56 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 type Screen interface {
-	SubScreen(x, y, width, height int) Screen
+	Bounds() image.Rectangle
+
+	SubScreen(rect image.Rectangle) Screen
 	Fill(clr color.Color)
+	FillRect(rect image.Rectangle, clr color.Color)
 	DrawImage(image *ebiten.Image)
-	DrawRect(x, y, z, w int, clr color.Color)
+	DrawOutline(rect image.Rectangle, clr color.Color)
 }
 
 type GoodScreen struct {
 	img *ebiten.Image
 }
 
-func FromScreen(img *ebiten.Image) GoodScreen {
-	return GoodScreen{
-		img: img,
-	}
+func FromScreen(img *ebiten.Image) GoodScreen { return GoodScreen{img: img} }
+
+func (s GoodScreen) Bounds() image.Rectangle { return s.img.Bounds() }
+
+func (s GoodScreen) Fill(clr color.Color) { s.img.Fill(clr) }
+
+func (s GoodScreen) SubScreen(rect image.Rectangle) Screen {
+	rect = image.Rect(
+		rect.Min.X, s.Bounds().Max.Y-rect.Max.Y,
+		rect.Max.X, s.Bounds().Max.Y-rect.Min.Y)
+	return FromScreen(s.img.SubImage(rect).(*ebiten.Image))
 }
 
-func (s GoodScreen) SubScreen(x, y, width, height int) Screen {
-	y = s.img.Bounds().Dy() - y
-	subImage := s.img.SubImage(image.Rect(x, y, x+width, y-height))
-	// (subImage.(*ebiten.Image)).Fill(color.RGBA{255, 0, 0, 32})
-	return FromScreen(subImage.(*ebiten.Image))
-}
-func (s GoodScreen) Fill(clr color.Color) {
-	s.img.Fill(clr)
+func (s GoodScreen) FillRect(rect image.Rectangle, clr color.Color) {
+	var x int = s.img.Bounds().Min.X + rect.Min.X
+	var y int = (s.img.Bounds().Max.Y - 1) - rect.Min.Y
+	var width, height int = rect.Dx(), rect.Dy()
+	vector.DrawFilledRect(s.img, float32(x), float32(y-height), float32(width), float32(height), clr, false)
 }
 
 func (s GoodScreen) DrawImage(image *ebiten.Image) {
-	s.img.DrawImage(image, nil)
+	geom := ebiten.GeoM{}
+	rect := s.Bounds()
+	geom.Scale(float64(rect.Dx())/float64(image.Bounds().Dx()), float64(rect.Dy())/float64(image.Bounds().Dy()))
+	geom.Translate(float64(rect.Min.X), float64(rect.Min.Y))
+	s.img.DrawImage(image, &ebiten.DrawImageOptions{GeoM: geom})
 }
 
-func (s GoodScreen) DrawRect(x, y, z, w int, clr color.Color) {
-	width, height := s.img.Bounds().Dx(), s.img.Bounds().Dy()
-	pixelCount := 4 * width * height
-	pixelData := make([]byte, pixelCount)
-	r, g, b, a := clr.RGBA()
-	comps := []uint8{uint8(r), uint8(g), uint8(b), uint8(a)}
-	s.img.ReadPixels(pixelData)
-	var k, l1, l2 int = 0, min(z, w), max(z, w)
-	_ = l2
-	for ; k < l1; k++ {
-		for o, c := range comps {
-			pixelData[4*((0)*width+(k))+o] = c
-			pixelData[4*((k)*width+(0))+o] = c
-			pixelData[4*((w-1)*width+(z-k-1))+o] = c
-			pixelData[4*((w-k-1)*width+(z-1))+o] = c
-		}
-	}
-	if l1 == w {
-		for ; k < l2; k++ {
-			for o, c := range comps {
-				pixelData[4*((0)*width+(k))+o] = c
-				pixelData[4*((w-1)*width+(z-k-1))+o] = c
-			}
-		}
-	} else {
-		for ; k < l2; k++ {
-			for o, c := range comps {
-				pixelData[4*((w-1-k)*width+(z-1))+o] = c
-				pixelData[4*((k)*width+(0))+o] = c
-			}
-		}
-	}
-	s.img.WritePixels(pixelData)
+func (s GoodScreen) DrawOutline(rect image.Rectangle, clr color.Color) {
+	x0, y0 := rect.Min.X, s.Bounds().Max.Y-rect.Min.Y
+	x1, y1 := rect.Max.X, s.Bounds().Max.Y-rect.Max.Y
+	vector.StrokeLine(s.img, float32(x0), float32(y0), float32(x1), float32(y0), 1, clr, false)
+	vector.StrokeLine(s.img, float32(x0+1), float32(y0), float32(x0+1), float32(y1), 1, clr, false)
+	vector.StrokeLine(s.img, float32(x1), float32(y1+1), float32(x0), float32(y1+1), 1, clr, false)
+	vector.StrokeLine(s.img, float32(x1), float32(y1), float32(x1), float32(y0), 1, clr, false)
 }

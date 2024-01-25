@@ -7,37 +7,37 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var nums = []int{6, 5, 4, 3, 2}
+var arr = []int{6, 5, 4, 3, 2}
 
 func Test(t *testing.T) {
-	q := queues.NewTHQueue[int]()
+	q := queues.NewTHQueue[int](10)
 	ix := 0
 	ie := 0
 	for i := 0; i < 1000; i++ {
-		q.Enq(nums[ix])
-		ix = (ix + 1) % len(nums)
+		q.Enq(arr[ix])
+		ix = (ix + 1) % len(arr)
 
-		q.Enq(nums[ix])
-		ix = (ix + 1) % len(nums)
+		q.Enq(arr[ix])
+		ix = (ix + 1) % len(arr)
 
 		a := q.Deq()
-		if nums[ie] != a {
-			assert.Equal(t, nums[ie], a, "%d: %v", i, q)
+		if arr[ie] != a {
+			assert.Equal(t, arr[ie], a, "%d: %v", i, q)
 			t.FailNow()
 		}
-		ie = (ie + 1) % len(nums)
+		ie = (ie + 1) % len(arr)
 	}
 }
 
 func BenchmarkEnqueue(b *testing.B) {
-	q := queues.NewTHQueue[int]()
+	q := queues.NewTHQueue[int](10)
 	for i := 0; i < b.N; i++ {
 		q.Enq(i)
 	}
 }
 
 func BenchmarkDequeue(b *testing.B) {
-	q := queues.NewTHQueue[int]()
+	q := queues.NewTHQueue[int](10)
 	for i := 0; i < b.N; i++ {
 		q.Enq(i)
 	}
@@ -48,7 +48,7 @@ func BenchmarkDequeue(b *testing.B) {
 }
 
 func BenchmarkMixed(b *testing.B) {
-	q := queues.NewTHQueue[int]()
+	q := queues.NewTHQueue[int](10)
 	for i := 0; i < b.N; i++ {
 		q.Enq(i)
 		if i%2 == 0 {
@@ -58,7 +58,7 @@ func BenchmarkMixed(b *testing.B) {
 }
 
 func BenchmarkMediumData(b *testing.B) {
-	q := queues.NewTHQueue[int]()
+	q := queues.NewTHQueue[int](10)
 	for i := 0; i < 1_000; i++ {
 		q.Enq(i)
 	}
@@ -70,7 +70,7 @@ func BenchmarkMediumData(b *testing.B) {
 }
 
 func BenchmarkLargeData(b *testing.B) {
-	q := queues.NewTHQueue[int]()
+	q := queues.NewTHQueue[int](10)
 	for i := 0; i < 1_000_000; i++ {
 		q.Enq(i)
 	}

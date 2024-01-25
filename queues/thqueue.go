@@ -5,8 +5,8 @@ type THQueue[T any] struct {
 	H, T int
 }
 
-func NewTHQueue[T any]() *THQueue[T] {
-	return &THQueue[T]{Q: make([]T, 10)}
+func NewTHQueue[T any](initialSize int) *THQueue[T] {
+	return &THQueue[T]{Q: make([]T, initialSize)}
 }
 
 func (q *THQueue[T]) Enq(item T) {

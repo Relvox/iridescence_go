@@ -48,3 +48,10 @@
     * **Status**: Needs retesting
 * `./utils` - A pile of misc utils.
   * **Status**: I guess...
+
+# TODO
+
+1. [ ] Rearrange to standard layout -> v0.1
+2. [ ] Separate out tools and stuff
+3. [ ] Monadic Option/Result
+   1. [ ] Integrate with stuff

@@ -34,7 +34,7 @@ func initialGrowths[T Number](gf GrowFlags, growth T) (T, T) {
 func Growths[T Number](gf GrowFlags, leftBound, leftEdge, growth, rightEdge, rightBound T) (T, T) {
 	leftGrow, rightGrow := initialGrowths(gf, growth)
 	leftSlack, rightSlack := leftEdge-leftBound, rightBound-rightEdge
-	var doOverflow bool = gf&4 != 0
+	var doOverflow bool = gf&4 == 0
 
 	if !doOverflow {
 		leftGrow = min(leftSlack, leftGrow)
