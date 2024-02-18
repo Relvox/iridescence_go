@@ -112,3 +112,11 @@ func Reversed[E ~[]T, T any](list E) []T {
 	}
 	return res
 }
+
+func Transform[E ~[]T, T,U any](l E, t func(T) U) []U {
+	var res []U = make([]U, len(l))
+	for i, v := range l {
+		res[i] = t(v)
+	}
+	return res
+}
