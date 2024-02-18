@@ -3,8 +3,6 @@ package maths
 import (
 	"math"
 	"sort"
-
-	"golang.org/x/exp/constraints"
 )
 
 func Sign[N Number](n N) N {
@@ -78,7 +76,7 @@ func Clamp[N Number](min, val, max N) N {
 	return val
 }
 
-func Sum[N constraints.Ordered](vs ...N) N {
+func Sum[N Number](vs ...N) N {
 	var sum N
 	for _, v := range vs {
 		sum += v
@@ -86,22 +84,43 @@ func Sum[N constraints.Ordered](vs ...N) N {
 	return sum
 }
 
-func GeometricMean[N Number](vals ...N) N {
-	var prod float64 = 1.0
-	for _, v := range vals {
-		prod *= float64(v)
+func Prod[N Number](vs ...N) N {
+	var prod N = vs[0]
+	for _, v := range vs[1:] {
+		prod *= v
 	}
-	return N(math.Round(math.Pow(prod, 1.0/float64(len(vals)))))
+	return prod
 }
 
-func XenoSum[N Number](vals ...N) N {
-	sort.Slice(vals, func(i, j int) bool {
-		return vals[i] < vals[j]
+func GeometricMean[N Number](vs ...N) N {
+	var prod float64 = 1.0
+	for _, v := range vs {
+		prod *= float64(v)
+	}
+	return N(math.Round(math.Pow(prod, 1.0/float64(len(vs)))))
+}
+func HarmonicMean[N Number](vs ...N) N {
+	var sum float64 = 0
+	for _, v := range vs {
+		if v == 0 {
+			return 0
+		}
+		sum += 1 / float64(v)
+	}
+	if sum == 0 {
+		return 0
+	}
+	return N(math.Round(float64(len(vs)) / sum))
+}
+
+func XenoSum[N Number](vs ...N) N {
+	sort.Slice(vs, func(i, j int) bool {
+		return vs[i] < vs[j]
 	})
 	var sum, factor N
 	sum, factor = 0, 1
-	for i := len(vals) - 1; i >= 0; i-- {
-		sum += vals[i] / factor
+	for i := len(vs) - 1; i >= 0; i-- {
+		sum += vs[i] / factor
 		factor *= 2
 	}
 	return sum
