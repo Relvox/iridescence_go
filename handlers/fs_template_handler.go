@@ -7,9 +7,11 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/toolvox/utilgo/pkg/fsutil"
+	"github.com/toolvox/utilgo/pkg/middleware"
+
 	"github.com/relvox/iridescence_go/files"
 	"github.com/relvox/iridescence_go/logging"
-	"github.com/relvox/iridescence_go/middleware"
 )
 
 // TemplateModelGetter is a function type that takes a template name and returns a model (data) for that template.
@@ -74,7 +76,7 @@ func (s FSTemplateHandler) WithDebug() FSTemplateHandler {
 func (s FSTemplateHandler) Parse() FSTemplateHandler {
 	s.Root = template.Must(s.Root.ParseFS(s.FS, s.Patterns...))
 	for _, pat := range s.Patterns {
-		patFiles, err := files.ListFS(s.FS, ".", pat)
+		patFiles, err := fsutil.ListFS(s.FS, ".", pat)
 		if err != nil {
 			s.Log.Error("error listing files", slog.String("pattern", pat), logging.Error(err))
 			continue
@@ -89,7 +91,7 @@ func (s FSTemplateHandler) Parse() FSTemplateHandler {
 
 // ServeHTTP handles HTTP requests and renders templates.
 func (s FSTemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	contextLog := r.Context().Value(middleware.Key("log"))
+	contextLog := r.Context().Value(middleware.Key_("log"))
 	if contextLog != nil {
 		s.Log = contextLog.(*slog.Logger)
 	}

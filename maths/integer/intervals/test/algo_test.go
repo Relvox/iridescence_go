@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/relvox/iridescence_go/asserts"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_FindCover(t *testing.T) {
@@ -12,69 +12,40 @@ func Test_FindCover(t *testing.T) {
 		intervals [][2]int
 		expected  []int
 	}{
-		{intervals: [][2]int{},
-			expected: []int{}},
-		{intervals: [][2]int{{2, 3}},
-			expected: []int{2, 3}},
-		{intervals: [][2]int{{13, 15}, {2, 4}},
-			expected: []int{2, 4, 13, 15}},
-		{intervals: [][2]int{{2, 3}, {4, 4}},
-			expected: []int{2, 4}},
-		{intervals: [][2]int{{7, 8}, {3, 4}, {5, 6}, {10, 12}, {1, 2}},
-			expected: []int{1, 8, 10, 12}},
-		{intervals: [][2]int{{3, 5}, {2, 4}},
-			expected: []int{2, 5}},
-		{intervals: [][2]int{{10, 12}, {4, 6}, {0, 8}, {7, 9}, {1, 3}},
-			expected: []int{0, 12}},
-		{intervals: [][2]int{{2, 3}, {4, 5}, {6, 7}, {8, 9}, {1, 10}},
-			expected: []int{1, 10}},
-		{intervals: [][2]int{{128, 191}, {192, 223}},
-			expected: []int{128, 223}},
-		{intervals: [][2]int{{32, 127}, {128, 159}},
-			expected: []int{32, 159}},
-		{intervals: [][2]int{{64, 159}, {160, 191}},
-			expected: []int{64, 191}},
-		// {intervals: [][2]int{
-		// 	1 {Structural Support [[160 191] [192 223]]} [[32 95] [96 127]]} [[64 127] [128 159]]}}
-		// 	1 {Structural Support [160 223] [32 127] [64 159]}
-		// 	expected:
-		// 	[]int{1, 10}},
-		// {intervals: [][2]int{
-		// 	2 {Specialized Construction Element [192 223] [[32 63] [64 95]]} [[128 159] [160 191]]}}
-		// 	2 {Specialized Construction Element [192 223] [32 95] [128 191]}
-		// 	expected:
-		// 	[]int{1, 10}},
-		// {intervals: [][2]int{
-		// 	3 {Simple Ration [[64 159] [160 191]]} [[64 159] [160 191]]} [[128 191] [192 223]]}}
-		// 	3 {Simple Ration [64 191] [64 191] [128 223]}
-		// 	expected:
-		// 	[]int{1, 10}},
-		// {intervals: [][2]int{
-		// 	4 {Nutritional Supplement [[64 127] [128 159]]} [[64 127] [128 159]]} [[160 191] [192 223]]}}
-		// 	4 {Nutritional Supplement [64 159] [64 159] [160 223]}
-		// 	expected:
-		// 	[]int{1, 10}},
-		// {intervals: [][2]int{
-		// 	5 {Emergency Medicine [[64 95] [128 159]]} [[96 127] [128 159]]} [192 223]}
-		// 	5 {Emergency Medicine [64 95 128 159] [96 159] [192 223]}
-		// 	expected:
-		// 	[]int{1, 10}},
-		// {intervals: [][2]int{
-		// 	6 {Fodder [[64 159] [160 191]]} [[96 191] [192 223]]} [[64 159] [160 191]]}}
-		// 	6 {Fire Fodder [64 191] [96 223] [64 191]}
-		// 	expected:
-		// 	[]int{1, 10}},
-		// {intervals: [][2]int{
-		// 	7 {Fuel [[64 127] [128 159]]} [[160 191] [192 223]]} [[32 95] [160 191]]}}
-		// 	7 {Fuel Cell [128 223] [160 223] [32 95 160 191]}
-		// 	expected:
-		// 	[]int{1, 10}},
-		// {intervals: [][2]int{
-		// 	8 {Power Core [[64 95] [192 223]]} [192 223] [[32 63] [192 223]]}}
-		// 	8 {Power Core [64 95 192 223] [192 223] [32 63 192 223]}
-		// 	expected:
-		// 	[]int{1, 10}},
-	}
+		{
+			intervals: [][2]int{},
+			expected:  []int{},
+		}, {
+			intervals: [][2]int{{2, 3}},
+			expected:  []int{2, 3},
+		}, {
+			intervals: [][2]int{{13, 15}, {2, 4}},
+			expected:  []int{2, 4, 13, 15},
+		}, {
+			intervals: [][2]int{{2, 3}, {4, 4}},
+			expected:  []int{2, 4},
+		}, {
+			intervals: [][2]int{{7, 8}, {3, 4}, {5, 6}, {10, 12}, {1, 2}},
+			expected:  []int{1, 8, 10, 12},
+		}, {
+			intervals: [][2]int{{3, 5}, {2, 4}},
+			expected:  []int{2, 5},
+		}, {
+			intervals: [][2]int{{10, 12}, {4, 6}, {0, 8}, {7, 9}, {1, 3}},
+			expected:  []int{0, 12},
+		}, {
+			intervals: [][2]int{{2, 3}, {4, 5}, {6, 7}, {8, 9}, {1, 10}},
+			expected:  []int{1, 10},
+		}, {
+			intervals: [][2]int{{128, 191}, {192, 223}},
+			expected:  []int{128, 223},
+		}, {
+			intervals: [][2]int{{32, 127}, {128, 159}},
+			expected:  []int{32, 159},
+		}, {
+			intervals: [][2]int{{64, 159}, {160, 191}},
+			expected:  []int{64, 191},
+		}}
 	for i, tt := range tests {
 		for si, solver := range solvers {
 			t.Run(fmt.Sprintf("Solver%d/Test%d", si, i), func(t *testing.T) {
@@ -108,7 +79,7 @@ func Test_FindCover_Group(t *testing.T) {
 						if baseResult == nil || otherResult == nil {
 							return
 						}
-						if !asserts.SameElements(t, baseResult, otherResult) {
+						if !assert.ElementsMatch(t, baseResult, otherResult) {
 							t.FailNow()
 						}
 					})

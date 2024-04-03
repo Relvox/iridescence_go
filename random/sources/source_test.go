@@ -9,7 +9,6 @@ import (
 	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/stat/distuv"
 
-	"github.com/relvox/iridescence_go/asserts/sadistics"
 	"github.com/relvox/iridescence_go/random/sources"
 )
 
@@ -17,14 +16,24 @@ type pRNG interface {
 	Uint64() uint64
 }
 
+func ChiSquared(bucketCounts map[int]int, totalItems int) float64 {
+	numBuckets := len(bucketCounts)
+	expectedCount := float64(totalItems) / float64(numBuckets)
+	var chiSquaredSum float64
+
+	for _, count := range bucketCounts {
+		observedCount := float64(count)
+		chiSquaredSum += (observedCount - expectedCount) * (observedCount - expectedCount) / expectedCount
+	}
+
+	return chiSquaredSum
+}
+
 func getChiSquaredThreshold(degreesOfFreedom int, confidenceLevel float64) float64 {
-	// Chi-squared distribution
 	dist := distuv.ChiSquared{
 		K: float64(degreesOfFreedom),
 	}
 
-	// Calculate the threshold value for the given confidence level
-	// The Quantile method requires the complement of the confidence level
 	return dist.Quantile(1 - confidenceLevel)
 }
 
@@ -36,7 +45,7 @@ func UniformDistribution_Test(pRng pRNG, numSamples int, numBuckets int) bool {
 		bucketCounts[bucket]++
 	}
 	log.Println(bucketCounts)
-	chiSquared := sadistics.ChiSquared(bucketCounts, numSamples)
+	chiSquared := ChiSquared(bucketCounts, numSamples)
 	threshold := getChiSquaredThreshold(numBuckets-1, 0.95) // Implement this function based on a chi-squared table
 	fmt.Printf("   Chi-Squared: %f Threshold: %f\n", chiSquared, threshold)
 	return chiSquared < threshold

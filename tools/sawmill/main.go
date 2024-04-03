@@ -9,8 +9,9 @@ import (
 	mux_handlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
+	"github.com/toolvox/utilgo/pkg/middleware"
+
 	"github.com/relvox/iridescence_go/logging"
-	"github.com/relvox/iridescence_go/middleware"
 	"github.com/relvox/iridescence_go/servers/sawmill"
 )
 
@@ -39,7 +40,7 @@ func main() {
 	sawmillServ.RegisterRoutes(router)
 
 	log.Info("Started Listening", slog.String("address", *addrFlag))
-	router.Use(mwLogging)
+	router.Use(mwLogging.Middleware)
 	headersOk := mux_handlers.AllowedHeaders([]string{"X-Requested-With", "content-type"})
 	originsOk := mux_handlers.AllowedOrigins([]string{"*"})
 	methodsOk := mux_handlers.AllowedMethods([]string{"GET", "POST"})

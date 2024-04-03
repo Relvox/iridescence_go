@@ -1,0 +1,228 @@
+?   	github.com/relvox/iridescence_go/clients	[no test files]
+?   	github.com/relvox/iridescence_go/cmd	[no test files]
+?   	github.com/relvox/iridescence_go/errors	[no test files]
+?   	github.com/relvox/iridescence_go/experimental/ebiten/ebihelpers	[no test files]
+?   	github.com/relvox/iridescence_go/experimental/ebiten/ebiterm/sandbox	[no test files]
+?   	github.com/relvox/iridescence_go/experimental/namegen	[no test files]
+testing: warning: no tests to run
+PASS
+ok  	github.com/relvox/iridescence_go/experimental/graph	(cached) [no tests to run]
+=== RUN   Test
+=== RUN   Test/Sanity
+=== RUN   Test/Sanity/int
+=== RUN   Test/Sanity/int/HasValue
+=== RUN   Test/Sanity/int/Try
+=== RUN   Test/Sanity/int/Do
+=== RUN   Test/Sanity/int/Maybe
+=== RUN   Test/Sanity/uint
+=== RUN   Test/Sanity/uint/HasValue
+=== RUN   Test/Sanity/uint/Try
+=== RUN   Test/Sanity/uint/Do
+=== RUN   Test/Sanity/uint/Maybe
+=== RUN   Test/Sanity/float64
+=== RUN   Test/Sanity/float64/HasValue
+=== RUN   Test/Sanity/float64/Try
+=== RUN   Test/Sanity/float64/Do
+=== RUN   Test/Sanity/float64/Maybe
+=== RUN   Test/Sanity/option_test.dummy
+=== RUN   Test/Sanity/option_test.dummy/HasValue
+=== RUN   Test/Sanity/option_test.dummy/Try
+=== RUN   Test/Sanity/option_test.dummy/Do
+=== RUN   Test/Sanity/option_test.dummy/Maybe
+=== RUN   Test/Sanity/*option_test.dummy
+=== RUN   Test/Sanity/*option_test.dummy/HasValue
+=== RUN   Test/Sanity/*option_test.dummy/Try
+=== RUN   Test/Sanity/*option_test.dummy/Do
+=== RUN   Test/Sanity/*option_test.dummy/Maybe
+=== RUN   Test/Sanity/*option_test.dummy#01
+=== RUN   Test/Sanity/*option_test.dummy#01/HasValue
+=== RUN   Test/Sanity/*option_test.dummy#01/Try
+=== RUN   Test/Sanity/*option_test.dummy#01/Do
+=== RUN   Test/Sanity/*option_test.dummy#01/Maybe
+=== RUN   Test/Sanity/option_test.dummy#01
+=== RUN   Test/Sanity/option_test.dummy#01/HasValue
+=== RUN   Test/Sanity/option_test.dummy#01/Try
+=== RUN   Test/Sanity/option_test.dummy#01/Do
+=== RUN   Test/Sanity/option_test.dummy#01/Maybe
+=== RUN   Test/Sanity/*option_test.dummy#02
+=== RUN   Test/Sanity/*option_test.dummy#02/HasValue
+=== RUN   Test/Sanity/*option_test.dummy#02/Try
+=== RUN   Test/Sanity/*option_test.dummy#02/Do
+=== RUN   Test/Sanity/*option_test.dummy#02/Maybe
+=== RUN   Test/Sanity/<nil>
+=== RUN   Test/Sanity/<nil>/HasValue
+=== RUN   Test/Sanity/<nil>/Try
+=== RUN   Test/Sanity/<nil>/Do
+=== RUN   Test/Sanity/<nil>/Maybe
+=== RUN   Test/Stuff
+=== RUN   Test/Stuff_int
+--- PASS: Test (0.00s)
+    --- PASS: Test/Sanity (0.00s)
+        --- PASS: Test/Sanity/int (0.00s)
+            --- PASS: Test/Sanity/int/HasValue (0.00s)
+            --- PASS: Test/Sanity/int/Try (0.00s)
+            --- PASS: Test/Sanity/int/Do (0.00s)
+            --- PASS: Test/Sanity/int/Maybe (0.00s)
+        --- PASS: Test/Sanity/uint (0.00s)
+            --- PASS: Test/Sanity/uint/HasValue (0.00s)
+            --- PASS: Test/Sanity/uint/Try (0.00s)
+            --- PASS: Test/Sanity/uint/Do (0.00s)
+            --- PASS: Test/Sanity/uint/Maybe (0.00s)
+        --- PASS: Test/Sanity/float64 (0.00s)
+            --- PASS: Test/Sanity/float64/HasValue (0.00s)
+            --- PASS: Test/Sanity/float64/Try (0.00s)
+            --- PASS: Test/Sanity/float64/Do (0.00s)
+            --- PASS: Test/Sanity/float64/Maybe (0.00s)
+        --- PASS: Test/Sanity/option_test.dummy (0.00s)
+            --- PASS: Test/Sanity/option_test.dummy/HasValue (0.00s)
+            --- PASS: Test/Sanity/option_test.dummy/Try (0.00s)
+            --- PASS: Test/Sanity/option_test.dummy/Do (0.00s)
+            --- PASS: Test/Sanity/option_test.dummy/Maybe (0.00s)
+        --- PASS: Test/Sanity/*option_test.dummy (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy/HasValue (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy/Try (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy/Do (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy/Maybe (0.00s)
+        --- PASS: Test/Sanity/*option_test.dummy#01 (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy#01/HasValue (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy#01/Try (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy#01/Do (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy#01/Maybe (0.00s)
+        --- PASS: Test/Sanity/option_test.dummy#01 (0.00s)
+            --- PASS: Test/Sanity/option_test.dummy#01/HasValue (0.00s)
+            --- PASS: Test/Sanity/option_test.dummy#01/Try (0.00s)
+            --- PASS: Test/Sanity/option_test.dummy#01/Do (0.00s)
+            --- PASS: Test/Sanity/option_test.dummy#01/Maybe (0.00s)
+        --- PASS: Test/Sanity/*option_test.dummy#02 (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy#02/HasValue (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy#02/Try (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy#02/Do (0.00s)
+            --- PASS: Test/Sanity/*option_test.dummy#02/Maybe (0.00s)
+        --- PASS: Test/Sanity/<nil> (0.00s)
+            --- PASS: Test/Sanity/<nil>/HasValue (0.00s)
+            --- PASS: Test/Sanity/<nil>/Try (0.00s)
+            --- PASS: Test/Sanity/<nil>/Do (0.00s)
+            --- PASS: Test/Sanity/<nil>/Maybe (0.00s)
+    --- PASS: Test/Stuff (0.00s)
+    --- PASS: Test/Stuff_int (0.00s)
+=== RUN   TestResult
+=== RUN   TestResult/Sanity
+=== RUN   TestResult/Sanity/int/*errors.errorString
+=== RUN   TestResult/Sanity/uint/*errors.errorString
+=== RUN   TestResult/Sanity/float64/*errors.errorString
+=== RUN   TestResult/Sanity/option_test.dummy/*errors.errorString
+=== RUN   TestResult/Sanity/*option_test.dummy/*errors.errorString
+--- PASS: TestResult (0.00s)
+    --- PASS: TestResult/Sanity (0.00s)
+        --- PASS: TestResult/Sanity/int/*errors.errorString (0.00s)
+        --- PASS: TestResult/Sanity/uint/*errors.errorString (0.00s)
+        --- PASS: TestResult/Sanity/float64/*errors.errorString (0.00s)
+        --- PASS: TestResult/Sanity/option_test.dummy/*errors.errorString (0.00s)
+        --- PASS: TestResult/Sanity/*option_test.dummy/*errors.errorString (0.00s)
+PASS
+ok  	github.com/relvox/iridescence_go/experimental/option	(cached)
+?   	github.com/relvox/iridescence_go/experimental/prototyping	[no test files]
+?   	github.com/relvox/iridescence_go/files	[no test files]
+?   	github.com/relvox/iridescence_go/flags	[no test files]
+=== RUN   Test_Append
+--- PASS: Test_Append (0.00s)
+=== RUN   Test_Rebuild
+--- PASS: Test_Rebuild (0.03s)
+=== RUN   Test_TypedQueries
+=== RUN   Test_TypedQueries/typed_list
+=== RUN   Test_TypedQueries/filtered_typed_list
+=== RUN   Test_TypedQueries/insert_object
+=== RUN   Test_TypedQueries/insert_objects
+--- PASS: Test_TypedQueries (0.00s)
+    --- PASS: Test_TypedQueries/typed_list (0.00s)
+    --- PASS: Test_TypedQueries/filtered_typed_list (0.00s)
+    --- PASS: Test_TypedQueries/insert_object (0.00s)
+    --- PASS: Test_TypedQueries/insert_objects (0.00s)
+PASS
+ok  	github.com/relvox/iridescence_go/experimental/prolog	(cached)
+testing: warning: no tests to run
+PASS
+ok  	github.com/relvox/iridescence_go/geom	(cached) [no tests to run]
+?   	github.com/relvox/iridescence_go/handlers	[no test files]
+?   	github.com/relvox/iridescence_go/logging	[no test files]
+?   	github.com/relvox/iridescence_go/maths/advanced/intervals	[no test files]
+?   	github.com/relvox/iridescence_go/maths/integer	[no test files]
+?   	github.com/relvox/iridescence_go/maths/integer/intervals	[no test files]
+=== RUN   TestMaxValue
+=== RUN   TestMaxValue/Max_uint8
+=== RUN   TestMaxValue/Max_uint16
+=== RUN   TestMaxValue/Max_uint32
+=== RUN   TestMaxValue/Max_uint64
+=== RUN   TestMaxValue/Max_uint
+=== RUN   TestMaxValue/Max_int8
+=== RUN   TestMaxValue/Max_int16
+=== RUN   TestMaxValue/Max_int32
+=== RUN   TestMaxValue/Max_int64
+=== RUN   TestMaxValue/Max_int
+=== RUN   TestMaxValue/Max_float32
+=== RUN   TestMaxValue/Max_float64
+--- PASS: TestMaxValue (0.00s)
+    --- PASS: TestMaxValue/Max_uint8 (0.00s)
+    --- PASS: TestMaxValue/Max_uint16 (0.00s)
+    --- PASS: TestMaxValue/Max_uint32 (0.00s)
+    --- PASS: TestMaxValue/Max_uint64 (0.00s)
+    --- PASS: TestMaxValue/Max_uint (0.00s)
+    --- PASS: TestMaxValue/Max_int8 (0.00s)
+    --- PASS: TestMaxValue/Max_int16 (0.00s)
+    --- PASS: TestMaxValue/Max_int32 (0.00s)
+    --- PASS: TestMaxValue/Max_int64 (0.00s)
+    --- PASS: TestMaxValue/Max_int (0.00s)
+    --- PASS: TestMaxValue/Max_float32 (0.00s)
+    --- PASS: TestMaxValue/Max_float64 (0.00s)
+=== RUN   TestMinValue
+=== RUN   TestMinValue/Min_uint8
+=== RUN   TestMinValue/Min_uint16
+=== RUN   TestMinValue/Min_uint32
+=== RUN   TestMinValue/Min_uint64
+=== RUN   TestMinValue/Min_uint
+=== RUN   TestMinValue/Min_int8
+=== RUN   TestMinValue/Min_int16
+=== RUN   TestMinValue/Min_int32
+=== RUN   TestMinValue/Min_int64
+=== RUN   TestMinValue/Min_int
+=== RUN   TestMinValue/Min_float32
+=== RUN   TestMinValue/Min_float64
+--- PASS: TestMinValue (0.00s)
+    --- PASS: TestMinValue/Min_uint8 (0.00s)
+    --- PASS: TestMinValue/Min_uint16 (0.00s)
+    --- PASS: TestMinValue/Min_uint32 (0.00s)
+    --- PASS: TestMinValue/Min_uint64 (0.00s)
+    --- PASS: TestMinValue/Min_uint (0.00s)
+    --- PASS: TestMinValue/Min_int8 (0.00s)
+    --- PASS: TestMinValue/Min_int16 (0.00s)
+    --- PASS: TestMinValue/Min_int32 (0.00s)
+    --- PASS: TestMinValue/Min_int64 (0.00s)
+    --- PASS: TestMinValue/Min_int (0.00s)
+    --- PASS: TestMinValue/Min_float32 (0.00s)
+    --- PASS: TestMinValue/Min_float64 (0.00s)
+=== RUN   Test_FOO
+2024/04/10 14:36:13 |------||------||------||------||------||------||------||------|
+2024/04/10 14:36:13 -0000000000000000000000000000000000000000000000000000000010000000
+2024/04/10 14:36:13 -0000000000000000000000000000000000000000000000000000000010000000
+2024/04/10 14:36:13 |------||------||------||------||------||------||------||------|
+2024/04/10 14:36:13 -0000000000000000000000000000000000000000000000001000000000000000
+2024/04/10 14:36:13 -0000000000000000000000000000000000000000000000001000000000000000
+2024/04/10 14:36:13 |------||------||------||------||------||------||------||------|
+2024/04/10 14:36:13 -0000000000000000000000000000000010000000000000000000000000000000
+2024/04/10 14:36:13 -0000000000000000000000000000000010000000000000000000000000000000
+2024/04/10 14:36:13 |------||------||------||------||------||------||------||------|
+2024/04/10 14:36:13 -1000000000000000000000000000000000000000000000000000000000000000
+2024/04/10 14:36:13 -1000000000000000000000000000000000000000000000000000000000000000
+2024/04/10 14:36:13 |------||------||------||------||------||------||------||------|
+2024/04/10 14:36:13 -1000000000000000000000000000000000000000000000000000000000000000
+2024/04/10 14:36:13 -1000000000000000000000000000000000000000000000000000000000000000
+2024/04/10 14:36:13 |------||------||------||------||------||------||------||------|
+--- PASS: Test_FOO (0.01s)
+PASS
+ok  	github.com/relvox/iridescence_go/maths	(cached)
+?   	github.com/relvox/iridescence_go/middleware	[no test files]
+?   	github.com/relvox/iridescence_go/serialization	[no test files]
+?   	github.com/relvox/iridescence_go/servers	[no test files]
+?   	github.com/relvox/iridescence_go/servers/sawmill	[no test files]
+?   	github.com/relvox/iridescence_go/text	[no test files]
+?   	github.com/relvox/iridescence_go/tools/sawmill	[no test files]

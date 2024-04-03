@@ -6,8 +6,9 @@ import (
 	"io/fs"
 	"os"
 
+	"github.com/toolvox/utilgo/pkg/errs"
+
 	"github.com/relvox/iridescence_go/errors"
-	"github.com/relvox/iridescence_go/validation"
 )
 
 func UnmarshalJson[T any](data []byte) (T, error) {
@@ -16,7 +17,7 @@ func UnmarshalJson[T any](data []byte) (T, error) {
 	if err != nil {
 		return *new(T), fmt.Errorf("unmarshal json: %w", err)
 	}
-	if v, ok := any(t).(validation.Validable); ok {
+	if v, ok := any(t).(errs.Validator); ok {
 		return errors.WrapCommaError(t, v.Validate())("unmarshal json: validate")
 	}
 	return t, nil

@@ -17,6 +17,9 @@ func IsolateName(file string) string {
 	return strings.TrimSuffix(filepath.Base(file), filepath.Ext(file))
 }
 
+// ListFS
+//
+// Deprecated: moved to utilgo
 func ListFS(fsys fs.FS, root, glob string) ([]string, error) {
 	var result []string
 	err := fs.WalkDir(fsys, root, func(path string, d fs.DirEntry, err error) error {

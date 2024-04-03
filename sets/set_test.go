@@ -3,7 +3,7 @@ package sets_test
 import (
 	"testing"
 
-	"github.com/relvox/iridescence_go/asserts"
+	"github.com/stretchr/testify/assert"
 )
 
 const (
@@ -18,11 +18,11 @@ func TestUnion(t *testing.T) {
 	expected := generateSet(mil+semi, 0)
 	t.Run("Set", func(t *testing.T) {
 		actual := set1.SetUnion(set2)
-		asserts.SameKeyValues(t, expected, actual)
+		assert.Equal(t, expected, actual)
 	})
 	t.Run("Elements", func(t *testing.T) {
 		actual := set1.Union(elements2...)
-		asserts.SameKeyValues(t, expected, actual)
+		assert.Equal(t, expected, actual)
 	})
 }
 
@@ -33,11 +33,11 @@ func TestIntersection(t *testing.T) {
 	expected := generateSet(semi, semi)
 	t.Run("Set", func(t *testing.T) {
 		actual := set1.SetIntersection(set2)
-		asserts.SameKeyValues(t, expected, actual)
+		assert.Equal(t, expected, actual)
 	})
 	t.Run("Elements", func(t *testing.T) {
 		actual := set1.Intersection(elements2...)
-		asserts.SameKeyValues(t, expected, actual)
+		assert.Equal(t, expected, actual)
 	})
 }
 
@@ -48,10 +48,10 @@ func TestDifference(t *testing.T) {
 	expected := generateSet(semi, 0)
 	t.Run("Set", func(t *testing.T) {
 		actual := set1.SetDifference(set2)
-		asserts.SameKeyValues(t, expected, actual)
+		assert.Equal(t, expected, actual)
 	})
 	t.Run("Elements", func(t *testing.T) {
 		actual := set1.Difference(elements2...)
-		asserts.SameKeyValues(t, expected, actual)
+		assert.Equal(t, expected, actual)
 	})
 }

@@ -8,6 +8,8 @@ import (
 )
 
 // MergeMaps creates a new map and copies target and then source into it
+//
+// Deprecated: moved to utilgo, see maputil.Merge
 func MergeMaps[K comparable, V any](target, source map[K]V) map[K]V {
 	var result map[K]V = make(map[K]V, len(source)+len(target))
 	for k, v := range target {
@@ -20,6 +22,8 @@ func MergeMaps[K comparable, V any](target, source map[K]V) map[K]V {
 }
 
 // SortedKeys gets a slice of all the keys in a map, sorted
+//
+// Deprecated: moved to, see maputil.SortedKeys
 func SortedKeys[K constraints.Ordered, V any](self map[K]V) []K {
 	var result []K = make([]K, len(self))
 	id := 0
@@ -34,6 +38,8 @@ func SortedKeys[K constraints.Ordered, V any](self map[K]V) []K {
 }
 
 // SortKeys gets a slice of all the keys in a map, sorted by a predicate func
+//
+// Deprecated: moved to utilgo, see maputil.SortKeys
 func SortKeys[K comparable, V any, U ~map[K]V](self U, pred func(a, b K) bool) []K {
 	var result []K = make([]K, len(self))
 	id := 0
@@ -48,6 +54,8 @@ func SortKeys[K comparable, V any, U ~map[K]V](self U, pred func(a, b K) bool) [
 }
 
 // MapToStruct converts a map to a struct by converting through json
+//
+// Deprecated: moved to utilgo, see maputil.MapToStruct
 func MapToStruct[T any](m map[string]any) (T, error) {
 	var result T
 	data, err := json.Marshal(m)
@@ -59,24 +67,17 @@ func MapToStruct[T any](m map[string]any) (T, error) {
 }
 
 // StructToMap converts a struct to a map by converting through json
+//
+// Deprecated: moved to utilgo, see maputil.StructToMap
 func StructToMap[T any](t T) (map[string]any, error) {
 	data, err := json.Marshal(t)
 	if err != nil {
 		return nil, err
 	}
-
 	var out map[string]any
 	err = json.Unmarshal(data, &out)
 	if err != nil {
 		return nil, err
 	}
-
 	return out, nil
-}
-
-func TakeOne[TM ~map[TK]TV, TK comparable, TV any](dict TM) (TK, TV) {
-	for k, v := range dict {
-		return k, v
-	}
-	panic("empty map")
 }

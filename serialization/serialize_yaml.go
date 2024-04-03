@@ -6,13 +6,13 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func MarshalYaml[T any](obj T, indented bool) ([]byte, error) {
+func MarshalYaml[T any](obj T) ([]byte, error) {
 	data, err := yaml.Marshal(obj)
 	return data, err
 }
 
 func MarshalYamlFile[T any](obj T, path string) error {
-	data, err := MarshalYaml(obj, true)
+	data, err := MarshalYaml(obj)
 	if err != nil {
 		return err
 	}

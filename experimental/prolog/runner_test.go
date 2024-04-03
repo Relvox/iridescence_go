@@ -6,7 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/relvox/iridescence_go/asserts"
 	"github.com/relvox/iridescence_go/experimental/prolog"
 )
 
@@ -97,21 +96,22 @@ func Test_TypedQueries(t *testing.T) {
 		if err != nil {
 			panic(err)
 		}
-		asserts.SameElements(t, expected, actual)
+		assert.ElementsMatch(t, expected, actual)
 	})
 	t.Run("filtered typed list", func(t *testing.T) {
 		actual, err := prolog.TypedListFilter[Foo](r, "Id =:= 2")
 		if err != nil {
 			panic(err)
 		}
-		asserts.SameElements(t, expected[1:2], actual)
+		assert.ElementsMatch(t, expected[1:2], actual)
+
 	})
 	t.Run("insert object", func(t *testing.T) {
 		actual, err := prolog.TypedList[Foo](r)
 		if err != nil {
 			panic(err)
 		}
-		asserts.SameElements(t, expected, actual)
+		assert.ElementsMatch(t, expected, actual)
 		err = prolog.InsertObjects(r, Foo{4, "d"})
 		if err != nil {
 			panic(err)
@@ -121,14 +121,14 @@ func Test_TypedQueries(t *testing.T) {
 			panic(err)
 		}
 		expected = append(expected, Foo{4, "d"})
-		asserts.SameElements(t, expected, actual)
+		assert.ElementsMatch(t, expected, actual)
 	})
 	t.Run("insert objects", func(t *testing.T) {
 		actual, err := prolog.TypedList[Foo](r)
 		if err != nil {
 			panic(err)
 		}
-		asserts.SameElements(t, expected, actual)
+		assert.ElementsMatch(t, expected, actual)
 		err = prolog.InsertObjects(r, Foo{5, "e"}, Foo{6, "f"})
 		if err != nil {
 			panic(err)
@@ -139,7 +139,7 @@ func Test_TypedQueries(t *testing.T) {
 		}
 		expected = append(expected, Foo{5, "e"})
 		expected = append(expected, Foo{6, "f"})
-		asserts.SameElements(t, expected, actual)
+		assert.ElementsMatch(t, expected, actual)
 	})
 
 }

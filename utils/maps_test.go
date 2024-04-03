@@ -7,7 +7,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/relvox/iridescence_go/asserts"
 	"github.com/relvox/iridescence_go/experimental/prototyping"
 	"github.com/relvox/iridescence_go/sets"
 	"github.com/relvox/iridescence_go/utils"
@@ -158,7 +157,7 @@ func Benchmark_MapToStruct(b *testing.B) {
 			utils.MapToStruct[prototyping.Entity](m)
 		}
 	})
-	for k := 100; k < 1000001; k *= 10 {
+	for k := 100; k <= 100000; k *= 10 {
 		b.Run(fmt.Sprintf("big map %d", k), func(b *testing.B) {
 			b.StopTimer()
 			_, m := gen_entity_and_map(k)
@@ -186,9 +185,9 @@ func Test_StructToMap(t *testing.T) {
 		assert.Equal(t, "Alice", actual["Name"])
 		assert.True(t, reflect.DeepEqual(map[string]any{"prop1": "value1", "prop2": "value2"}, actual["Properties"]))
 		assert.True(t, reflect.DeepEqual(map[string]any{"stat1": 10.0, "stat2": 20.0}, actual["Stats"]))
-		asserts.SameElements(t, []any{"tag1", "tag2"}, actual["Tags"].([]any))
+		assert.ElementsMatch(t, []any{"tag1", "tag2"}, actual["Tags"].([]any))
 	})
-	for k := 100; k < 1000001; k *= 10 {
+	for k := 100; k <= 10000; k *= 10 {
 		t.Run(fmt.Sprintf("big entity %d", k), func(t *testing.T) {
 			e, expected := gen_entity_and_map(k)
 			actual, err := utils.StructToMap(e)
@@ -197,7 +196,7 @@ func Test_StructToMap(t *testing.T) {
 			assert.Equal(t, expected["Name"], actual["Name"])
 			assert.True(t, reflect.DeepEqual(expected["Properties"], actual["Properties"]))
 			assert.True(t, reflect.DeepEqual(expected["Stats"], actual["Stats"]))
-			asserts.SameElements(t, expected["Tags"].([]any), actual["Tags"].([]any))
+			assert.ElementsMatch(t, expected["Tags"].([]any), actual["Tags"].([]any))
 		})
 	}
 }

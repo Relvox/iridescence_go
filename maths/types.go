@@ -3,13 +3,7 @@ package maths
 import (
 	"math"
 	"unsafe"
-
-	"golang.org/x/exp/constraints"
 )
-
-type Number interface {
-	constraints.Integer | constraints.Float
-}
 
 func MaxValue[T any]() T {
 	var val T
